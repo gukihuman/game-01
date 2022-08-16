@@ -13,12 +13,14 @@ Canvas(class="bg-slate-800 w-screen h-screen" ref='canvas')
     :pointX ='enemy.pointX'
     :pointY ='enemy.pointY'
     :radius ='enemyRadius'
-    :update ='update')
+    :update ='update'
+  )
   Character(
     :pointX ='characterPosition().pointX'
     :pointY ='characterPosition().pointY'
     :radius ='characterRadius'
-    :update ='update')
+    :update ='update'
+  )
 
 
 </template>
@@ -43,10 +45,6 @@ export default {
         pointY: null,
       },
       villageRadius: 130,
-      enemyPosition: {
-        pointX: null,
-        pointY: null,
-      },
       enemyRadius: 20,
       characterRadius: 30,
       update: 0,
@@ -54,17 +52,6 @@ export default {
     };
   },
   methods: {
-    characterPosition() {
-      const legH = this.center.pointX - this.enemyPosition.pointX;
-      const legV = this.center.pointY - this.enemyPosition.pointY;
-      const hypo = Math.sqrt(legH ** 2 + legV ** 2);
-      const ratio = this.villageRadius / hypo;
-      const newLegH = legH * ratio;
-      const newLegV = legV * ratio;
-      const pointX = this.center.pointX - newLegH;
-      const pointY = this.center.pointY - newLegV;
-      return { pointX, pointY };
-    },
     clearCanvas() {
       if (!this.$refs.canvas) return;
       this.$refs.canvas.provider.context.clearRect(
@@ -73,7 +60,24 @@ export default {
         this.$el.clientWidth,
         this.$el.clientHeight
       );
-      this.updateVillage++;
+    },
+    characterPosition() {
+      let legH = null;
+      let legV = null;
+      if (this.enemies.length === 0) {
+        legH = this.center.pointX;
+        legV = this.center.pointY;
+      } else {
+        legH = this.center.pointX - this.enemies[0].pointX;
+        legV = this.center.pointY - this.enemies[0].pointY;
+      }
+      const hypo = Math.sqrt(legH ** 2 + legV ** 2);
+      const ratio = this.villageRadius / hypo;
+      const newLegH = legH * ratio;
+      const newLegV = legV * ratio;
+      const pointX = this.center.pointX - newLegH;
+      const pointY = this.center.pointY - newLegV;
+      return { pointX, pointY };
     },
     generateEnemyPosition() {
       const randomX = Math.random() * this.$el.clientWidth;
@@ -107,6 +111,13 @@ export default {
       }
       return { pointX, pointY };
     },
+    generateEnemy() {
+      const { pointX, pointY } = this.generateEnemyPosition();
+      this.enemies.push({
+        pointX: pointX,
+        pointY: pointY,
+      });
+    },
     enemyMove(pointX, pointY, speed) {
       const legH = this.center.pointX - pointX;
       const legV = this.center.pointY - pointY;
@@ -118,21 +129,10 @@ export default {
       const newPointY = this.center.pointY - newLegV;
       return { newPointX, newPointY, hypo };
     },
-    generateEnemy() {
-      const { pointX, pointY } = this.generateEnemyPosition();
-      this.enemies.push({
-        pointX: pointX,
-        pointY: pointY,
-      });
-    },
   },
   mounted() {
     this.center.pointX = this.$el.clientWidth / 2;
     this.center.pointY = this.$el.clientHeight / 2;
-    this.generateEnemyPosition();
-
-    this.generateEnemy();
-    this.generateEnemy();
     this.generateEnemy();
 
     //main draw loop
@@ -142,7 +142,7 @@ export default {
         const { newPointX, newPointY, hypo } = this.enemyMove(
           enemy.pointX,
           enemy.pointY,
-          10
+          2
         );
         if (hypo > this.villageRadius + 50) {
           enemy.pointX = newPointX;
@@ -151,6 +151,10 @@ export default {
       });
       this.update++;
     }, 1000 / 60);
+
+    setInterval(() => {
+      this.generateEnemy();
+    }, 5000);
   },
 };
 </script>
