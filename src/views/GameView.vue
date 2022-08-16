@@ -1,9 +1,24 @@
 <template lang="pug">
 
 Canvas(class="bg-slate-800 w-screen h-screen" ref='canvas')
-  Village(:x1='center.x1', :x2='center.x2' :radius='villageRadius' :update='updateVillage' ref='village')
-  Enemy(:x1='enemyPosition.x1', :x2='enemyPosition.x2', :radius='enemyRadius')
-  Character(:x1='enemyAngle().x1', :x2='enemyAngle().x2', :radius='characterRadius')
+  Village(
+    :pointX ='center.pointX'
+    :pointY ='center.pointY'
+    :radius ='villageRadius'
+    :update ='update'
+  )
+  Enemy(
+    v-for ='(enemy, index) in enemies'
+    :key = 'index'
+    :pointX ='enemy.pointX'
+    :pointY ='enemy.pointY'
+    :radius ='enemyRadius'
+    :update ='update')
+  Character(
+    :pointX ='characterPosition().pointX'
+    :pointY ='characterPosition().pointY'
+    :radius ='characterRadius'
+    :update ='update')
 
 
 </template>
@@ -24,52 +39,118 @@ export default {
   data() {
     return {
       center: {
-        x1: null,
-        x2: null,
+        pointX: null,
+        pointY: null,
       },
       villageRadius: 130,
       enemyPosition: {
-        x1: 500,
-        x2: 1000,
+        pointX: null,
+        pointY: null,
       },
       enemyRadius: 20,
       characterRadius: 30,
-      updateVillage: 0,
+      update: 0,
+      enemies: [],
     };
   },
   methods: {
-    enemyAngle() {
-      const legH = this.center.x1 - this.enemyPosition.x1;
-      const legV = this.center.x2 - this.enemyPosition.x2;
+    characterPosition() {
+      const legH = this.center.pointX - this.enemyPosition.pointX;
+      const legV = this.center.pointY - this.enemyPosition.pointY;
       const hypo = Math.sqrt(legH ** 2 + legV ** 2);
       const ratio = this.villageRadius / hypo;
       const newLegH = legH * ratio;
       const newLegV = legV * ratio;
-      const x1 = this.center.x1 - newLegH;
-      const x2 = this.center.x2 - newLegV;
-      return { x1, x2 };
+      const pointX = this.center.pointX - newLegH;
+      const pointY = this.center.pointY - newLegV;
+      return { pointX, pointY };
     },
     clearCanvas() {
+      if (!this.$refs.canvas) return;
       this.$refs.canvas.provider.context.clearRect(
         0,
         0,
-        this.$refs.canvas.$el.clientWidth,
-        this.$refs.canvas.$el.clientHeight
+        this.$el.clientWidth,
+        this.$el.clientHeight
       );
       this.updateVillage++;
     },
+    generateEnemyPosition() {
+      const randomX = Math.random() * this.$el.clientWidth;
+      const randomY = Math.random() * this.$el.clientHeight;
+      let pointX = null;
+      let pointY = null;
+
+      // top/bottom or left/right
+      if (Math.random() > 0.5) {
+        // top or bottom
+        if (Math.random() > 0.5) {
+          // top
+          pointX = randomX;
+          pointY = 0;
+        } else {
+          // bottom
+          pointX = randomX;
+          pointY = this.$el.clientHeight;
+        }
+      } else {
+        // left or right
+        if (Math.random() > 0.5) {
+          // left
+          pointX = 0;
+          pointY = randomY;
+        } else {
+          // right
+          pointX = this.$el.clientWidth;
+          pointY = randomY;
+        }
+      }
+      return { pointX, pointY };
+    },
+    enemyMove(pointX, pointY, speed) {
+      const legH = this.center.pointX - pointX;
+      const legV = this.center.pointY - pointY;
+      const hypo = Math.sqrt(legH ** 2 + legV ** 2);
+      const ratio = (hypo - speed) / hypo;
+      const newLegH = legH * ratio;
+      const newLegV = legV * ratio;
+      const newPointX = this.center.pointX - newLegH;
+      const newPointY = this.center.pointY - newLegV;
+      return { newPointX, newPointY, hypo };
+    },
+    generateEnemy() {
+      const { pointX, pointY } = this.generateEnemyPosition();
+      this.enemies.push({
+        pointX: pointX,
+        pointY: pointY,
+      });
+    },
   },
   mounted() {
-    this.center.x1 = this.$el.clientWidth / 2;
-    this.center.x2 = this.$el.clientHeight / 2;
-    // setInterval(() => {
-    //   this.enemyPosition.x1 += 10;
-    // }, 1000 / 60);
-    this.$el.addEventListener("mousemove", (e) => {
-      this.enemyPosition.x1 = e.clientX;
-      this.enemyPosition.x2 = e.clientY;
+    this.center.pointX = this.$el.clientWidth / 2;
+    this.center.pointY = this.$el.clientHeight / 2;
+    this.generateEnemyPosition();
+
+    this.generateEnemy();
+    this.generateEnemy();
+    this.generateEnemy();
+
+    //main draw loop
+    setInterval(() => {
       this.clearCanvas();
-    });
+      this.enemies.forEach((enemy) => {
+        const { newPointX, newPointY, hypo } = this.enemyMove(
+          enemy.pointX,
+          enemy.pointY,
+          10
+        );
+        if (hypo > this.villageRadius + 50) {
+          enemy.pointX = newPointX;
+          enemy.pointY = newPointY;
+        }
+      });
+      this.update++;
+    }, 1000 / 60);
   },
 };
 </script>
