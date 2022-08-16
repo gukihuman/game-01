@@ -1,7 +1,7 @@
 <script>
 export default {
   inject: ["provider"],
-  props: ["x1", "x2", "radius"],
+  props: ["x1", "x2", "radius", "update"],
   render() {
     if (!this.provider.context) return;
 

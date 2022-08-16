@@ -1,7 +1,7 @@
 <template lang="pug">
 
 Canvas(class="bg-slate-800 w-screen h-screen" ref='canvas')
-  Village(:x1='center.x1', :x2='center.x2' :radius='villageRadius')
+  Village(:x1='center.x1', :x2='center.x2' :radius='villageRadius' :update='updateVillage' ref='village')
   Enemy(:x1='enemyPosition.x1', :x2='enemyPosition.x2', :radius='enemyRadius')
   Character(:x1='enemyAngle().x1', :x2='enemyAngle().x2', :radius='characterRadius')
 
@@ -34,6 +34,7 @@ export default {
       },
       enemyRadius: 20,
       characterRadius: 30,
+      updateVillage: 0,
     };
   },
   methods: {
@@ -48,6 +49,15 @@ export default {
       const x2 = this.center.x2 - newLegV;
       return { x1, x2 };
     },
+    clearCanvas() {
+      this.$refs.canvas.provider.context.clearRect(
+        0,
+        0,
+        this.$refs.canvas.$el.clientWidth,
+        this.$refs.canvas.$el.clientHeight
+      );
+      this.updateVillage++;
+    },
   },
   mounted() {
     this.center.x1 = this.$el.clientWidth / 2;
@@ -55,6 +65,11 @@ export default {
     // setInterval(() => {
     //   this.enemyPosition.x1 += 10;
     // }, 1000 / 60);
+    this.$el.addEventListener("mousemove", (e) => {
+      this.enemyPosition.x1 = e.clientX;
+      this.enemyPosition.x2 = e.clientY;
+      this.clearCanvas();
+    });
   },
 };
 </script>

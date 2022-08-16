@@ -2,6 +2,9 @@
 export default {
   inject: ["provider"],
   props: ["x1", "x2", "radius"],
+  data() {
+    return {};
+  },
   render() {
     if (!this.provider.context) return;
 
