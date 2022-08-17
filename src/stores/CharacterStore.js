@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { useVillageStore } from "./VillageStore";
 import { useCommonStore } from "./CommonStore";
+import { useEnemiesStore } from "./EnemiesStore";
 
 export const useCharacterStore = defineStore("CharacterStore", {
   state: () => {
@@ -9,11 +10,16 @@ export const useCharacterStore = defineStore("CharacterStore", {
       pointX: useCommonStore().centerPoint.x,
       pointY: useCommonStore().centerPoint.y - useVillageStore().villageRadius,
       status: "idle",
-      speed: 0.02,
+      speed: 0.01,
     };
   },
   actions: {
     move() {
+      if (useEnemiesStore().enemies.length === 0) {
+        this.status = "idle";
+      } else {
+        this.status = "move";
+      }
       let legH = useCommonStore().centerPoint.x - this.pointX;
       let legV = useCommonStore().centerPoint.y - this.pointY;
       let targetLegH =
@@ -22,19 +28,21 @@ export const useCharacterStore = defineStore("CharacterStore", {
         useCommonStore().centerPoint.y - useVillageStore().closestEnemyPoint.y;
       let characterAngle = Math.atan2(legV, legH);
       let targetAngle = Math.atan2(targetLegV, targetLegH);
-      // if (targetLegH < 0) {
-      //   console.log("run");
-      //   targetAngle += Math.PI;
-      // }
       let diff = characterAngle - targetAngle;
 
-      if ((diff < 0.05 && diff > 0) || (diff > -0.05 && diff < 0)) return;
+      if ((diff < 0.05 && diff > 0) || (diff > -0.05 && diff < 0)) {
+        let enemyStatus = null;
+        useEnemiesStore().enemies.forEach((enemy) => {
+          if (enemy.status == "fight") enemyStatus = "fight";
+        });
+        if (enemyStatus === "fight") {
+          this.status = "fight";
+        } else {
+          this.status = "idle";
+        }
+        return;
+      }
 
-      console.log("---Start");
-      console.log(characterAngle * (180 / Math.PI));
-      console.log("---");
-      console.log(targetAngle * (180 / Math.PI));
-      console.log("---End");
       let newAngle = null;
       if (
         (targetAngle < characterAngle &&
@@ -49,8 +57,12 @@ export const useCharacterStore = defineStore("CharacterStore", {
       let newLegH = Math.cos(newAngle) * useVillageStore().villageRadius;
       let newLegV = Math.sin(newAngle) * useVillageStore().villageRadius;
 
-      this.pointX = useCommonStore().centerPoint.x - newLegH;
-      this.pointY = useCommonStore().centerPoint.y - newLegV;
+      this.pointX = Number(
+        (useCommonStore().centerPoint.x - newLegH).toFixed(1)
+      );
+      this.pointY = Number(
+        (useCommonStore().centerPoint.y - newLegV).toFixed(1)
+      );
     },
   },
 });

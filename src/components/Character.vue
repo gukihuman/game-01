@@ -17,7 +17,13 @@ export default {
       Math.PI * 2,
       false
     );
-    c.fillStyle = "#a2d2ff";
+    if (useCharacterStore().status === "idle") {
+      c.fillStyle = "#a3b18a";
+    } else if (useCharacterStore().status === "move") {
+      c.fillStyle = "#e9c46a";
+    } else {
+      c.fillStyle = "#e76f51";
+    }
     c.fill();
   },
 };

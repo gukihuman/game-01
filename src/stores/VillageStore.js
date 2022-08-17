@@ -6,7 +6,7 @@ export const useVillageStore = defineStore("VillageStore", {
   state: () => {
     return {
       villageRadius: 130,
-      closestEnemyPoint: { x: 0, y: 0 },
+      closestEnemyPoint: { x: useCommonStore().centerPoint.x, y: 0 },
     };
   },
   actions: {

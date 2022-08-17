@@ -6,9 +6,10 @@ import { getTriangle } from "@/js/common";
 export const useEnemiesStore = defineStore("EnemiesStore", {
   state: () => {
     return {
-      enemySpeed: 4,
+      enemySpeed: 5,
       enemyRadius: 20,
       enemies: [],
+      statusAll: "move",
     };
   },
   actions: {
@@ -52,11 +53,15 @@ export const useEnemiesStore = defineStore("EnemiesStore", {
       const distance = getTriangle(pointX, pointY);
       const speed = this.enemySpeed;
       const ratio = this._getRatio(distance.hypo, speed);
-      this.enemies.push({ pointX, pointY, ...distance, ratio, speed });
+      const status = "move";
+      this.enemies.push({ pointX, pointY, ...distance, ratio, speed, status });
     },
     move() {
       this.enemies.forEach((enemy) => {
-        if (enemy.hypo < useVillageStore().villageRadius + 50) return;
+        if (enemy.hypo < useVillageStore().villageRadius + 50) {
+          enemy.status = "fight";
+          return;
+        }
 
         enemy.ratio = this._getRatio(enemy.hypo, enemy.speed);
         enemy.hypo -= enemy.speed;

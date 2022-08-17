@@ -13,6 +13,7 @@ Canvas(ref='canvas-wrapper')
     :key = 'index'
     :pointX ='enemy.pointX'
     :pointY ='enemy.pointY'
+    :status='enemy.status'
   )
 
 
@@ -38,6 +39,7 @@ export default {
   data() {
     return {
       gameFrame: 0,
+      gameSpeed: 3,
       center: {
         pointX: null,
         pointY: null,
@@ -67,19 +69,20 @@ export default {
     useCommonStore().centerPoint.x = useCommonStore().canvas.width / 2;
     useCommonStore().centerPoint.y = useCommonStore().canvas.height / 2;
 
-    useEnemiesStore().generateEnemy();
-    useVillageStore().updateClosestEnemyPoint();
-
     //main draw loop
     setInterval(() => {
-      // return;
-
       this.gameFrame++;
       useCommonStore().gameFrame++;
 
       if (this.gameFrame % 3 === 0) {
         useEnemiesStore().move();
-        useCharacterStore().move();
+
+        if (
+          useCharacterStore().status === "idle" ||
+          useCharacterStore().status === "move"
+        ) {
+          useCharacterStore().move();
+        }
       }
 
       this.clearCanvas();
@@ -87,7 +90,7 @@ export default {
         useEnemiesStore().generateEnemy();
         useVillageStore().updateClosestEnemyPoint();
       }
-    }, 1000 / 60);
+    }, 1000 / (60 * this.gameSpeed));
   },
 };
 </script>

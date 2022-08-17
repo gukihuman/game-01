@@ -3,7 +3,7 @@ import { useEnemiesStore } from "@/stores/EnemiesStore";
 
 export default {
   inject: ["provider"],
-  props: ["pointX", "pointY", "radius"],
+  props: ["pointX", "pointY", "status"],
   data() {
     return {};
   },
@@ -21,7 +21,11 @@ export default {
       Math.PI * 2,
       false
     );
-    c.fillStyle = "#6a040f";
+    if (this.status === "fight") {
+      c.fillStyle = "#6a040f";
+    } else {
+      c.fillStyle = "#d90429";
+    }
     c.fill();
   },
 };
