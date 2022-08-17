@@ -1,14 +1,14 @@
 <template lang="pug">
 
-//- wrapper
-div
+div(class="bg-slate-800 w-screen h-screen" ref="canvas-wrapper")
 
-  canvas(ref="my-canvas")
+  canvas(ref="canvas")
     slot
 
 </template>
 
 <script>
+import { useCommonStore } from "@/stores/CommonStore";
 export default {
   data() {
     return {
@@ -24,9 +24,11 @@ export default {
     };
   },
   mounted() {
-    this.provider.context = this.$refs["my-canvas"].getContext("2d");
-    this.$refs["my-canvas"].width = this.$el.clientWidth;
-    this.$refs["my-canvas"].height = this.$el.clientHeight;
+    this.provider.context = this.$refs.canvas.getContext("2d");
+    this.$refs.canvas.width = this.$refs["canvas-wrapper"].clientWidth;
+    this.$refs.canvas.height = this.$refs["canvas-wrapper"].clientHeight;
+    useCommonStore().canvas.width = this.$refs.canvas.width;
+    useCommonStore().canvas.height = this.$refs.canvas.height;
   },
 };
 </script>

@@ -1,14 +1,22 @@
 <script>
+import { useCharacterStore } from "@/stores/CharacterStore";
+
 export default {
   inject: ["provider"],
-  props: ["pointX", "pointY", "radius"],
   render() {
     if (!this.provider.context) return;
 
     const c = this.provider.context;
 
     c.beginPath();
-    c.arc(this.pointX, this.pointY, this.radius, 0, Math.PI * 2, false);
+    c.arc(
+      useCharacterStore().pointX,
+      useCharacterStore().pointY,
+      useCharacterStore().characterRadius,
+      0,
+      Math.PI * 2,
+      false
+    );
     c.fillStyle = "#a2d2ff";
     c.fill();
   },
