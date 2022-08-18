@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       gameFrame: 0,
-      gameSpeed: 3,
+      gameSpeed: 1,
       center: {
         pointX: null,
         pointY: null,
@@ -74,19 +74,20 @@ export default {
       this.gameFrame++;
       useCommonStore().gameFrame++;
 
-      if (this.gameFrame % 3 === 0) {
-        useEnemiesStore().move();
+      useEnemiesStore().move();
 
-        if (
-          useCharacterStore().status === "idle" ||
-          useCharacterStore().status === "move"
-        ) {
-          useCharacterStore().move();
-        }
+      if (
+        useCharacterStore().status === "idle" ||
+        useCharacterStore().status === "move"
+      ) {
+        useCharacterStore().move();
       }
 
       this.clearCanvas();
-      if (this.gameFrame % 180 === 0 && this.gameFrame < 700) {
+      if (
+        (this.gameFrame % 500 === 0 && this.gameFrame < 1100) ||
+        this.gameFrame === 120
+      ) {
         useEnemiesStore().generateEnemy();
         useVillageStore().updateClosestEnemyPoint();
       }

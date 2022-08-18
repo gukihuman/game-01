@@ -7,10 +7,11 @@ export const useCharacterStore = defineStore("CharacterStore", {
   state: () => {
     return {
       characterRadius: 30,
+      prevPointX: 0,
       pointX: useCommonStore().centerPoint.x,
       pointY: useCommonStore().centerPoint.y - useVillageStore().villageRadius,
       status: "idle",
-      speed: 0.01,
+      speed: 0.005,
     };
   },
   actions: {
@@ -29,6 +30,10 @@ export const useCharacterStore = defineStore("CharacterStore", {
       let characterAngle = Math.atan2(legV, legH);
       let targetAngle = Math.atan2(targetLegV, targetLegH);
       let diff = characterAngle - targetAngle;
+
+      if (Math.floor(useCommonStore().gameFrame / 30) % 2) {
+        this.prevPointX = this.pointX;
+      }
 
       if ((diff < 0.05 && diff > 0) || (diff > -0.05 && diff < 0)) {
         let enemyStatus = null;
@@ -58,10 +63,10 @@ export const useCharacterStore = defineStore("CharacterStore", {
       let newLegV = Math.sin(newAngle) * useVillageStore().villageRadius;
 
       this.pointX = Number(
-        (useCommonStore().centerPoint.x - newLegH).toFixed(1)
+        (useCommonStore().centerPoint.x - newLegH).toFixed(2)
       );
       this.pointY = Number(
-        (useCommonStore().centerPoint.y - newLegV).toFixed(1)
+        (useCommonStore().centerPoint.y - newLegV).toFixed(2)
       );
     },
   },

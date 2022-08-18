@@ -18,8 +18,8 @@ export default {
       Math.PI * 2,
       false
     );
-    c.strokeStyle = "#457b9d";
-    c.lineWidth = 5;
+    c.strokeStyle = "#344e41";
+    c.lineWidth = 2;
     c.stroke();
   },
 };

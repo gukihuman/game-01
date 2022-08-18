@@ -6,7 +6,7 @@ import { getTriangle } from "@/js/common";
 export const useEnemiesStore = defineStore("EnemiesStore", {
   state: () => {
     return {
-      enemySpeed: 5,
+      enemySpeed: 1,
       enemyRadius: 20,
       enemies: [],
       statusAll: "move",
@@ -58,6 +58,7 @@ export const useEnemiesStore = defineStore("EnemiesStore", {
     },
     move() {
       this.enemies.forEach((enemy) => {
+        if (enemy.status === "fight") return;
         if (enemy.hypo < useVillageStore().villageRadius + 50) {
           enemy.status = "fight";
           return;

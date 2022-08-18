@@ -1,6 +1,9 @@
 <template lang="pug">
 
-div(class="bg-slate-800 w-screen h-screen" ref="canvas-wrapper")
+div(
+  class="bg-slate-800 w-screen h-screen overflow-hidden"
+  ref="canvas-wrapper"
+)
 
   canvas(ref="canvas")
     slot
