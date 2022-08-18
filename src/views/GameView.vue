@@ -9,11 +9,12 @@ Canvas(ref='canvas-wrapper')
   )
   Enemy(
     :update = 'gameFrame'
-    v-for ='(enemy, index) in enemies'
+    v-for = '(enemy, index) in enemies'
     :key = 'index'
-    :pointX ='enemy.pointX'
-    :pointY ='enemy.pointY'
-    :status='enemy.status'
+    :pointX = 'enemy.pointX'
+    :pointY = 'enemy.pointY'
+    :prevPointX = 'enemy.prevPointX'
+    :status= 'enemy.status'
   )
 
 

@@ -1,9 +1,11 @@
 <script>
 import { useEnemiesStore } from "@/stores/EnemiesStore";
+import { useCommonStore } from "@/stores/CommonStore";
+import spriteMove from "@/assets/animation/goblin-move.json";
 
 export default {
   inject: ["provider"],
-  props: ["pointX", "pointY", "status"],
+  props: ["pointX", "pointY", "status", "prevPointX"],
   data() {
     return {};
   },
@@ -12,21 +14,45 @@ export default {
 
     const c = this.provider.context;
 
-    c.beginPath();
-    c.arc(
-      this.pointX,
-      this.pointY,
-      useEnemiesStore().enemyRadius,
-      0,
-      Math.PI * 2,
-      false
-    );
-    if (this.status === "fight") {
-      c.fillStyle = "#6a040f";
+    const image = new Image();
+    let sprite = spriteMove;
+    image.src = require("@/assets/animation/goblin-move.png");
+
+    const width = sprite.frames[0].sourceSize.w * 0.2;
+    const height = sprite.frames[0].sourceSize.h * 0.2;
+
+    if (this.prevPointX > this.pointX) {
+      //- right animation
+      c.drawImage(
+        image,
+        sprite.frames[0].sourceSize.w *
+          (Math.floor(useCommonStore().gameFrame / 15) % 4),
+        0,
+        sprite.frames[0].sourceSize.w,
+        sprite.frames[0].sourceSize.h,
+        this.pointX - width / 2,
+        this.pointY - height / 2,
+        width,
+        height
+      );
     } else {
-      c.fillStyle = "#d90429";
+      //- left animation
+      c.save();
+      c.scale(-1, 1);
+      c.drawImage(
+        image,
+        sprite.frames[0].sourceSize.w *
+          (Math.floor(useCommonStore().gameFrame / 15) % 4),
+        0,
+        sprite.frames[0].sourceSize.w,
+        sprite.frames[0].sourceSize.h,
+        (this.pointX - width / 2) * -1 - width,
+        this.pointY - height / 2,
+        width,
+        height
+      );
+      c.restore();
     }
-    c.fill();
   },
 };
 </script>

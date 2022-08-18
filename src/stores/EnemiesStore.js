@@ -54,7 +54,16 @@ export const useEnemiesStore = defineStore("EnemiesStore", {
       const speed = this.enemySpeed;
       const ratio = this._getRatio(distance.hypo, speed);
       const status = "move";
-      this.enemies.push({ pointX, pointY, ...distance, ratio, speed, status });
+      const prevPointX = pointX;
+      this.enemies.push({
+        pointX,
+        pointY,
+        ...distance,
+        ratio,
+        speed,
+        status,
+        prevPointX,
+      });
     },
     move() {
       this.enemies.forEach((enemy) => {
@@ -64,6 +73,7 @@ export const useEnemiesStore = defineStore("EnemiesStore", {
           return;
         }
 
+        enemy.prevPointX = enemy.pointX;
         enemy.ratio = this._getRatio(enemy.hypo, enemy.speed);
         enemy.hypo -= enemy.speed;
         enemy.legH = Number((enemy.legH * enemy.ratio).toFixed(2));
