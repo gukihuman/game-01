@@ -57,20 +57,46 @@ User.prototype.validate = function () {
   }
 };
 
+User.prototype.isFree = function () {
+  return new Promise(async (resolve, reject) => {
+    let usernameExists = await usersCollection.findOne({
+      username: this.data.username,
+    });
+    if (usernameExists) {
+      this.errors.push("That username is already taken");
+    }
+    if (!usernameExists) {
+      let emailExists = await usersCollection.findOne({
+        email: this.data.email,
+      });
+      if (emailExists) {
+        this.errors.push("That email is already taken");
+      }
+    }
+    resolve();
+  });
+};
+
 User.prototype.register = function () {
-  // Step #1: Validate user data
-  this.cleanUp();
-  this.validate();
+  return new Promise(async (resolve, reject) => {
+    // Step #1: Validate user data
+    this.cleanUp();
+    this.validate();
+    await this.isFree();
 
-  // Step #2: Only if there is no validation errors
-  // then save the user data into a database
-  if (!this.errors.length) {
-    // hash user password
-    let salt = bcrypt.genSaltSync(10);
-    this.data.password = bcrypt.hashSync(this.data.password, salt);
+    // Step #2: Only if there is no validation errors
+    // then save the user data into a database
+    if (!this.errors.length) {
+      // hash user password
+      let salt = bcrypt.genSaltSync(10);
+      this.data.password = bcrypt.hashSync(this.data.password, salt);
 
-    usersCollection.insertOne(this.data);
-  }
+      await usersCollection.insertOne(this.data);
+      resolve();
+    } else {
+      reject(this.errors);
+    }
+  });
 };
 
 User.prototype.login = function () {
@@ -98,6 +124,55 @@ User.prototype.login = function () {
             });
         } else {
           reject("Invalid username / password");
+        }
+      })
+      .catch(() => {
+        reject("Please try again later");
+      });
+  });
+};
+
+User.prototype.updateGameData = function () {
+  return new Promise((resolve, reject) => {
+    usersCollection
+      .findOne({ username: this.data.username })
+      .then((attemptedUser) => {
+        if (
+          attemptedUser &&
+          this.data.jwttoken &&
+          this.data.jwttoken == attemptedUser.jwttoken
+        ) {
+          usersCollection
+            .updateOne(
+              { _id: attemptedUser._id },
+              { $set: { gameData: this.data.gameData } }
+            )
+            .then(() => {
+              resolve();
+            });
+        } else {
+          reject("Invalid jwttoken");
+        }
+      })
+      .catch(() => {
+        reject("Please try again later");
+      });
+  });
+};
+
+User.prototype.getGameData = function () {
+  return new Promise((resolve, reject) => {
+    usersCollection
+      .findOne({ username: this.data.username })
+      .then((attemptedUser) => {
+        if (
+          attemptedUser &&
+          this.data.jwttoken &&
+          this.data.jwttoken == attemptedUser.jwttoken
+        ) {
+          resolve(attemptedUser.gameData);
+        } else {
+          reject("Invalid jwttoken");
         }
       })
       .catch(() => {

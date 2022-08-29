@@ -29,6 +29,7 @@ import { useCommonStore } from "@/stores/CommonStore";
 import { useVillageStore } from "@/stores/VillageStore";
 import { useEnemiesStore } from "@/stores/EnemiesStore";
 import { useCharacterStore } from "@/stores/CharacterStore";
+const axios = require("axios");
 
 export default {
   components: {
@@ -61,6 +62,14 @@ export default {
         this.$el.clientWidth,
         this.$el.clientHeight
       );
+    },
+    async registerUser() {
+      let res = await axios.post("/api/register", {
+        username: "123333",
+        password: "',.',.',.",
+        email: "oeeoeoe@oeoje.oee",
+      });
+      console.log(res);
     },
   },
   mounted() {
