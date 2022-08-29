@@ -1,7 +1,7 @@
 <template lang="pug">
 
 div(
-  class="w-screen h-screen overflow-hidden bg-[url('@/assets/ground.jpg')]"
+  class="w-screen h-screen overflow-hidden bg-[url('@/assets/common/ground.png')]"
   ref="canvas-wrapper"
 )
 

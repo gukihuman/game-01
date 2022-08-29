@@ -11,7 +11,7 @@ export default {
 
     let image = new Image();
 
-    image.src = require("@/assets/village.png");
+    image.src = require("@/assets/common/village.png");
     let offset = 35;
     c.drawImage(
       image,
