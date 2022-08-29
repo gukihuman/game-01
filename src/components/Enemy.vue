@@ -15,11 +15,21 @@ export default {
     const c = this.provider.context;
 
     const image = new Image();
-    let sprite = spriteMove;
-    image.src = require("@/assets/animation/goblin-move.png");
+    let width = null;
+    let height = null;
+    let sprite = null;
 
-    const width = sprite.frames[0].sourceSize.w * 0.2;
-    const height = sprite.frames[0].sourceSize.h * 0.2;
+    if (this.status === "move") {
+      image.src = require("@/assets/animation/goblin-move.png");
+      sprite = spriteMove;
+      width = sprite.frames[0].sourceSize.w * 0.2;
+      height = sprite.frames[0].sourceSize.h * 0.2;
+    } else {
+      sprite = spriteMove;
+      image.src = "";
+      width = sprite.frames[0].sourceSize.w * 0.2;
+      height = sprite.frames[0].sourceSize.h * 0.2;
+    }
 
     if (this.prevPointX > this.pointX) {
       //- right animation

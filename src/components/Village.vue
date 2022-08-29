@@ -9,18 +9,21 @@ export default {
 
     const c = this.provider.context;
 
-    c.beginPath();
-    c.arc(
-      useCommonStore().centerPoint.x,
-      useCommonStore().centerPoint.y,
-      useVillageStore().villageRadius,
+    let image = new Image();
+
+    image.src = require("@/assets/village.png");
+    let offset = 35;
+    c.drawImage(
+      image,
       0,
-      Math.PI * 2,
-      false
+      0,
+      900,
+      900,
+      useCommonStore().centerPoint.x - useVillageStore().villageRadius - offset,
+      useCommonStore().centerPoint.y - useVillageStore().villageRadius - offset,
+      useVillageStore().villageRadius * 2 + offset * 2,
+      useVillageStore().villageRadius * 2 + offset * 2
     );
-    c.strokeStyle = "#344e41";
-    c.lineWidth = 2;
-    c.stroke();
   },
 };
 </script>

@@ -1,0 +1,44 @@
+{"frames": [
+
+{
+	"filename": "goblin-bj_0000.png",
+	"frame": {"x":0,"y":0,"w":413,"h":460},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":413,"h":460},
+	"sourceSize": {"w":413,"h":460}
+},
+{
+	"filename": "goblin-bj_0001.png",
+	"frame": {"x":413,"y":0,"w":413,"h":460},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":413,"h":460},
+	"sourceSize": {"w":413,"h":460}
+},
+{
+	"filename": "goblin-bj_0002.png",
+	"frame": {"x":826,"y":0,"w":413,"h":460},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":413,"h":460},
+	"sourceSize": {"w":413,"h":460}
+},
+{
+	"filename": "goblin-bj_0003.png",
+	"frame": {"x":1239,"y":0,"w":413,"h":460},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":413,"h":460},
+	"sourceSize": {"w":413,"h":460}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "goblin-bj.png",
+	"format": "RGBA8888",
+	"size": {"w":1652,"h":460},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:686707422f309b8500fa55acb5bb20ca:1c10aa4844a5fbfee41fde9e708ac140:18bf19a023917a17ea844d4305e32047$"
+}
+}

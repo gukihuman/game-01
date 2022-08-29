@@ -1,6 +1,7 @@
 <script>
 import spriteIdle from "@/assets/animation/character-idle.json";
 import spriteMove from "@/assets/animation/character-move.json";
+import spriteGoblin from "@/assets/animation/goblin-bj.json";
 import { useCharacterStore } from "@/stores/CharacterStore";
 import { useCommonStore } from "@/stores/CommonStore";
 import { useVillageStore } from "@/stores/VillageStore";
@@ -17,6 +18,9 @@ export default {
     if (useCharacterStore().status === "move") {
       image.src = require("@/assets/animation/character-move.png");
       sprite = spriteMove;
+    } else if (useCharacterStore().status === "fight") {
+      image.src = require("@/assets/animation/goblin-bj.png");
+      sprite = spriteGoblin;
     } else {
       image.src = require("@/assets/animation/character-idle.png");
       sprite = spriteIdle;

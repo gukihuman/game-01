@@ -50,11 +50,17 @@ export const useEnemiesStore = defineStore("EnemiesStore", {
     },
     generateEnemy() {
       const { pointX, pointY } = this._generateRandomSidePosition();
+
+      // dev generation
+      // const pointX = useCommonStore().centerPoint.x;
+      // const pointY = useCommonStore().canvas.height;
+
       const distance = getTriangle(pointX, pointY);
       const speed = this.enemySpeed;
       const ratio = this._getRatio(distance.hypo, speed);
       const status = "move";
       const prevPointX = pointX;
+
       this.enemies.push({
         pointX,
         pointY,
@@ -68,7 +74,7 @@ export const useEnemiesStore = defineStore("EnemiesStore", {
     move() {
       this.enemies.forEach((enemy) => {
         if (enemy.status === "fight") return;
-        if (enemy.hypo < useVillageStore().villageRadius + 50) {
+        if (enemy.hypo < useVillageStore().villageRadius + 10) {
           enemy.status = "fight";
           return;
         }
