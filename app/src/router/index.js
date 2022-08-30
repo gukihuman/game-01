@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
-import GameView from "../views/GameView.vue";
 import MainMenuView from "../views/MainMenuView.vue";
+import AttackView from "../views/AttackView.vue";
+import StoryView from "../views/StoryView.vue";
 const Cookies = require("js-cookie");
 
 const routes = [
@@ -8,6 +9,16 @@ const routes = [
     path: "/",
     name: "main-menu",
     component: MainMenuView,
+  },
+  {
+    path: "/attack",
+    name: "attack",
+    component: AttackView,
+  },
+  {
+    path: "/story",
+    name: "story",
+    component: StoryView,
   },
 ];
 

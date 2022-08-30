@@ -71,8 +71,15 @@ div(v-if='showMessage')
 <script>
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useCommonStore } from "@/stores/CommonStore";
+import { getGameData } from "@/js/common";
 
 export default {
+  watch: {
+    logged(newValue) {
+      useCommonStore().logged = newValue;
+    },
+  },
   data() {
     return {
       username: "",
@@ -143,6 +150,7 @@ export default {
         });
         Cookies.set("username", this.username, { expires: 7 });
         Cookies.set("jwttoken", res.data.jwttoken, { expires: 7 });
+        getGameData();
       } else {
         this.message = [];
         this.message.push(res.data);
@@ -156,7 +164,6 @@ export default {
   },
   mounted() {
     if (Cookies.get("jwttoken") && Cookies.get("username")) {
-      console.log("eueu");
       this.username = Cookies.get("username");
       this.logged = true;
     }
