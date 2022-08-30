@@ -1,19 +1,165 @@
-<template>
-  <div></div>
+<template lang="pug">
+
+button(@click='toggleRegister()' v-if='!logged') Register
+button(@click='toggleLogin()' v-if='!logged') Login
+button(@click='logout()' v-if='logged') Logout
+
+form(@submit.prevent='login()' v-if='showLogin')
+  div
+    label(htmlFor="loginUsername") Username
+    input(
+      id='loginUsername'
+      name="username"
+      type="text"
+      v-model="loginInput.username"
+      placeholder="username"
+      autocomplete="off"
+    )
+  div
+    label(htmlFor="LoginPassword") Password
+    input(
+      id='LoginPassword'
+      name="username"
+      type="password"
+      v-model="loginInput.password"
+      placeholder="password"
+      autocomplete="off"
+    )
+  button(type='submit') Submit
+  
+form(@submit.prevent="register()" v-if='showRegister')
+  div
+    label(htmlFor="registerUsername") Username
+    input(
+      id='username'
+      name="registerUsername"
+      type="text"
+      v-model="registerInput.username"
+      placeholder="username"
+      autocomplete="off"
+    )
+  div
+    label(htmlFor="registerPassword") Password
+    input(
+      id='registerPassword'
+      name="username"
+      type="password"
+      v-model="registerInput.password"
+      placeholder="password"
+      autocomplete="off"
+    )
+  div
+    label(htmlFor="registerEmail") Email
+    input(
+      id='registerEmail'
+      name="username"
+      type="text"
+      v-model="registerInput.email"
+      placeholder="email"
+      autocomplete="off"
+    )
+  button(type='submit') Submit
+
+p(v-if="!logged") Welcome guest!
+p(v-if='logged') Welcome, {{username}}
+div(v-if='showMessage')
+  p(v-for="(item, index) in message" :key="index") {{item}}
+  button(@click='message=""') OK
+
 </template>
 
 <script>
-const axios = require("axios");
+import axios from "axios";
+import Cookies from "js-cookie";
 
 export default {
-  methods: {
-    async loginUser() {
-      let res = await axios.post("/api/login", {
-        username: "12345",
-        password: "',.',.',.",
-      });
-      Cookies.set("jwttoken", res.data, { expires: 7 });
+  data() {
+    return {
+      username: "",
+      logged: false,
+      message: [],
+      registerInput: {
+        username: "",
+        password: "",
+        email: "",
+      },
+      loginInput: {
+        username: "",
+        password: "",
+      },
+      showRegister: false,
+      showLogin: false,
+    };
+  },
+  computed: {
+    showMessage() {
+      if (this.message != "") {
+        return true;
+      }
     },
+  },
+  methods: {
+    toggleRegister() {
+      this.showRegister = !this.showRegister;
+      this.showLogin = false;
+    },
+    toggleLogin() {
+      this.showLogin = !this.showLogin;
+      this.showRegister = false;
+    },
+    async register() {
+      let res = await axios.post("/api/register", {
+        username: this.registerInput.username,
+        password: this.registerInput.password,
+        email: this.registerInput.email,
+      });
+      if (res.data == "OK") {
+        this.message = [];
+        this.message.push("Successfull!");
+        this.toggleRegister();
+        Object.keys(this.registerInput).forEach((key) => {
+          this.registerInput[key] = "";
+        });
+      } else {
+        this.message = [];
+        res.data.forEach((error) => {
+          this.message.push(error);
+        });
+      }
+    },
+    async login() {
+      let res = await axios.post("/api/login", {
+        username: this.loginInput.username,
+        password: this.loginInput.password,
+      });
+      if (res.data.jwttoken) {
+        this.logged = true;
+        this.username = this.loginInput.username;
+        this.message = [];
+        this.message.push("Successful!");
+        this.toggleLogin();
+        Object.keys(this.loginInput).forEach((key) => {
+          this.loginInput[key] = "";
+        });
+        Cookies.set("username", this.username, { expires: 7 });
+        Cookies.set("jwttoken", res.data.jwttoken, { expires: 7 });
+      } else {
+        this.message = [];
+        this.message.push(res.data);
+      }
+    },
+    logout() {
+      Cookies.remove("jwttoken");
+      Cookies.remove("username");
+      this.logged = false;
+    },
+  },
+  mounted() {
+    if (Cookies.get("jwttoken") && Cookies.get("username")) {
+      console.log("eueu");
+      this.username = Cookies.get("username");
+      this.logged = true;
+    }
   },
 };
 </script>

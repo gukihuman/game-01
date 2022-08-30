@@ -9,20 +9,18 @@ main(class="bg-slate-400 h-screen w-screen" ref="main")
 
 <script>
 import Preload from "@/components/Preload.vue";
-const { updateCookie } = require("@/js/common");
-const { useCommonStore } = require("@/stores/CommonStore");
+import { updateCookie } from "@/js/common";
+import { useCommonStore } from "@/stores/CommonStore";
 import { updateWindowSize } from "@/js/common";
 
 export default {
   components: {
     Preload,
   },
-  data() {
-    return {};
-  },
   mounted() {
-    // won't do anything if there is no such a cookie
+    // won't do anything if there is no such a cookie, default update = 7 days
     updateCookie("jwttoken");
+    updateCookie("username");
 
     updateWindowSize(useCommonStore());
     window.addEventListener("resize", () => {

@@ -1,30 +1,15 @@
 <template lang="pug">
-form(@submit.prevent="register()")
-  div
-    label Username
-    input(
-      name="username"
-      type="text"
-      v-model="username"
-      placeholder="username"
-      autocomplete="off")
-  div
-    label Password
-    input(
-      name="username"
-      type="text"
-      v-model="password"
-      placeholder="password"
-      autocomplete="off")
+
+Enter
+
 </template>
 
 <script>
+import Enter from "@/components/Enter.vue";
+
 export default {
-  data() {
-    return {
-      username: "",
-      password: "",
-    };
+  components: {
+    Enter,
   },
 };
 </script>
