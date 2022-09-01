@@ -17,7 +17,7 @@ exports.login = (req, res) => {
   user
     .login()
     .then((jwttoken) => {
-      res.json(jwttoken);
+      res.json({ jwttoken: jwttoken });
     })
     .catch((error) => {
       res.json(error);
@@ -29,7 +29,7 @@ exports.updateGameData = (req, res) => {
   user
     .updateGameData()
     .then(() => {
-      res.sendStatus(200);
+      res.json("OK");
     })
     .catch((error) => {
       res.json(error);
@@ -41,7 +41,7 @@ exports.getGameData = (req, res) => {
   user
     .getGameData()
     .then((gameData) => {
-      res.json(gameData);
+      res.json({ gameData: gameData });
     })
     .catch((error) => {
       res.json(error);

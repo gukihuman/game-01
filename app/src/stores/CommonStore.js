@@ -7,7 +7,10 @@ export const useCommonStore = defineStore("CommonStore", {
       canvas: { width: null, height: null },
       centerPoint: { x: null, y: null },
       window: { width: null, height: null },
+      gameWindow: { width: null, height: null },
       logged: false,
+      updateCanvas: 0,
+      fullscreen: false,
       gameData: {
         optionsSet: null,
       },

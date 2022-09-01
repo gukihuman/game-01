@@ -1,12 +1,14 @@
 <template lang="pug">
 
 div
-  Enter
+  div
+    Enter
 
-div(v-if='logged')
-  button(@click='toggleOptions()') Options
+  div(v-if='logged')
+    button(@click='toggleOptions()') Options
+    button(@click='Story()') Start
 
-  Options(v-if='showOptions' :toggleOptions='toggleOptions')
+    Options(v-if='showOptions' :toggleOptions='toggleOptions')
 
 </template>
 
@@ -33,6 +35,9 @@ export default {
   methods: {
     toggleOptions() {
       this.showOptions = !this.showOptions;
+    },
+    Story() {
+      this.$router.push("/story");
     },
   },
 };

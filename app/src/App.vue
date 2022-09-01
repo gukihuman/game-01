@@ -5,8 +5,10 @@ Preload
 main(id="main" ref="main" class="h-screen w-screen overflow-hidden flex \
 justify-center items-center" :style='outsideColor')
   div(ref='game-window' class='bg-slate-500 relative')
-    button(@click='toggleFullscreen()' class='absolute top-5 right-5') Fullscreen
-    router-view
+    button(@click='toggleFullscreen()' class='absolute top-5 right-5 z-20') Fullscreen
+    router-view(v-slot='{Component}')
+      transition(name="fade" mode='out-in')
+        component(:is="Component")
 
 </template>
 
@@ -45,6 +47,10 @@ export default {
         this.$refs["game-window"].style.height =
           useCommonStore().window.height.toString() + "px";
       }
+      useCommonStore().gameWindow.width = this.$refs["game-window"].clientWidth;
+      useCommonStore().gameWindow.height =
+        this.$refs["game-window"].clientHeight;
+      useCommonStore().updateCanvas++;
     },
   },
   computed: {
@@ -72,7 +78,20 @@ export default {
     window.addEventListener("resize", () => {
       updateWindowSize(useCommonStore());
       this.updateGameWindowSize();
+      useCommonStore().updateCanvas++;
     });
   },
 };
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

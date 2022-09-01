@@ -1,0 +1,44 @@
+{"frames": [
+
+{
+	"filename": "drill_0000.png",
+	"frame": {"x":1,"y":1,"w":67,"h":120},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":67,"h":120},
+	"sourceSize": {"w":67,"h":120}
+},
+{
+	"filename": "drill_0001.png",
+	"frame": {"x":70,"y":1,"w":67,"h":120},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":67,"h":120},
+	"sourceSize": {"w":67,"h":120}
+},
+{
+	"filename": "drill_0002.png",
+	"frame": {"x":139,"y":1,"w":67,"h":120},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":67,"h":120},
+	"sourceSize": {"w":67,"h":120}
+},
+{
+	"filename": "drill_0003.png",
+	"frame": {"x":208,"y":1,"w":67,"h":120},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":67,"h":120},
+	"sourceSize": {"w":67,"h":120}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "drill.webp",
+	"format": "RGBA8888",
+	"size": {"w":276,"h":122},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:99c4689ea53a47e88930612135344aa4:bd3c4f47788c59416507125bea94dcc5:c1883189aee641efac4d089f89682bf4$"
+}
+}

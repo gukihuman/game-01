@@ -1,6 +1,6 @@
 <template lang="pug">
 
-Canvas(ref='canvas-wrapper')
+Canvas(ref='canvas-wrapper' class='bg-[url("@/assets/common/ground.png")]')
   Village(
     :update = "gameFrame"
     )
@@ -16,6 +16,9 @@ Canvas(ref='canvas-wrapper')
     :prevPointX = 'enemy.prevPointX'
     :status= 'enemy.status'
   )
+  TextFieldOut(
+    :update = 'gameFrame'
+  )
 
 
 </template>
@@ -25,6 +28,7 @@ import Village from "@/components/Village.vue";
 import Canvas from "@/components/Canvas.vue";
 import Enemy from "@/components/Enemy.vue";
 import Character from "@/components/Character.vue";
+import TextFieldOut from "@/components/common/TextFieldOut.vue";
 import { useCommonStore } from "@/stores/CommonStore";
 import { useVillageStore } from "@/stores/VillageStore";
 import { useEnemiesStore } from "@/stores/EnemiesStore";
@@ -36,6 +40,7 @@ export default {
     Canvas,
     Enemy,
     Character,
+    TextFieldOut,
   },
   data() {
     return {

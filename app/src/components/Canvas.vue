@@ -1,7 +1,7 @@
 <template lang="pug">
 
 div(
-  class="w-screen h-screen overflow-hidden bg-[url('@/assets/common/ground.png')]"
+  class="w-full h-full overflow-hidden"
   ref="canvas-wrapper"
 )
 
@@ -12,6 +12,7 @@ div(
 
 <script>
 import { useCommonStore } from "@/stores/CommonStore";
+
 export default {
   data() {
     return {
@@ -20,7 +21,6 @@ export default {
       },
     };
   },
-
   provide() {
     return {
       provider: this.provider,
@@ -28,10 +28,14 @@ export default {
   },
   mounted() {
     this.provider.context = this.$refs.canvas.getContext("2d");
-    this.$refs.canvas.width = this.$refs["canvas-wrapper"].clientWidth;
-    this.$refs.canvas.height = this.$refs["canvas-wrapper"].clientHeight;
+    this.$refs.canvas.width = useCommonStore().gameWindow.width;
+    this.$refs.canvas.height = useCommonStore().gameWindow.height;
     useCommonStore().canvas.width = this.$refs.canvas.width;
     useCommonStore().canvas.height = this.$refs.canvas.height;
+    window.addEventListener("resize", () => {
+      this.$refs.canvas.width = useCommonStore().gameWindow.width;
+      this.$refs.canvas.height = useCommonStore().gameWindow.height;
+    });
   },
 };
 </script>

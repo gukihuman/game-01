@@ -90,6 +90,7 @@ User.prototype.register = function () {
       // hash user password
       let salt = bcrypt.genSaltSync(10);
       this.data.password = bcrypt.hashSync(this.data.password, salt);
+      this.data.gameData = {};
 
       await usersCollection.insertOne(this.data);
       resolve();
