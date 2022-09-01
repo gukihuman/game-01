@@ -19,7 +19,7 @@ button(@click='saveChanges()') OK
 </template>
 
 <script>
-import { useCommonStore } from "@/stores/CommonStore";
+import { useCommonStore as cs } from "@/stores/CommonStore";
 import { getGameData } from "@/js/common";
 import { updateGameData } from "@/js/common";
 
@@ -29,25 +29,27 @@ export default {
     return {
       optionsSet: {
         outsideBrightness: 50,
+        animationSpeed: 1,
       },
     };
   },
   methods: {
     saveChanges() {
-      useCommonStore().gameData.optionsSet = this.optionsSet;
+      cs().gameData.optionsSet = this.optionsSet;
       updateGameData();
+      console.log(this.optionsSet);
       this.toggleOptions();
     },
   },
   mounted() {
     getGameData().then(() => {
-      if (!useCommonStore().gameData.optionsSet) {
-        useCommonStore().gameData.optionsSet = this.optionsSet;
+      if (!cs().gameData.optionsSet) {
+        cs().gameData.optionsSet = this.optionsSet;
       } else {
-        this.optionsSet = useCommonStore().gameData.optionsSet;
+        this.optionsSet = cs().gameData.optionsSet;
       }
       this.$refs["outside-brightness"].addEventListener("input", () => {
-        useCommonStore().gameData.optionsSet.outsideBrightness =
+        cs().gameData.optionsSet.outsideBrightness =
           this.optionsSet.outsideBrightness;
       });
     });

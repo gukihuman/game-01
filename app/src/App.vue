@@ -9,14 +9,14 @@ justify-center items-center" :style='outsideColor')
     router-view(v-slot='{Component}')
       transition(name="fade" mode='out-in')
         component(:is="Component")
+    p(class='absolute top-40 right-5 z-20') {{counter}}
 
 </template>
 
 <script>
 import Preload from "@/components/Preload.vue";
 import { updateCookie } from "@/js/common";
-import { useCommonStore } from "@/stores/CommonStore";
-import { updateWindowSize } from "@/js/common";
+import { useCommonStore as cs } from "@/stores/CommonStore";
 import { getGameData } from "@/js/common";
 import Cookies from "js-cookie";
 
@@ -33,31 +33,29 @@ export default {
       }
     },
     updateGameWindowSize() {
-      if (
-        useCommonStore().window.width / useCommonStore().window.height <
-        16 / 9
-      ) {
-        this.$refs["game-window"].style.width =
-          useCommonStore().window.width.toString() + "px";
-        this.$refs["game-window"].style.height =
-          ((useCommonStore().window.width * 9) / 16).toString() + "px";
+      let setWidth = (val) => (this.$refs["game-window"].style.width = val);
+      let setHeight = (val) => (this.$refs["game-window"].style.height = val);
+
+      if (cs().window.w / cs().window.h < 16 / 9) {
+        setWidth(cs().window.w.toString() + "px");
+        setHeight(((cs().window.w * 9) / 16).toString() + "px");
       } else {
-        this.$refs["game-window"].style.width =
-          ((useCommonStore().window.height * 16) / 9).toString() + "px";
-        this.$refs["game-window"].style.height =
-          useCommonStore().window.height.toString() + "px";
+        setWidth(((cs().window.h * 16) / 9).toString() + "px");
+        setHeight(cs().window.h.toString() + "px");
       }
-      useCommonStore().gameWindow.width = this.$refs["game-window"].clientWidth;
-      useCommonStore().gameWindow.height =
-        this.$refs["game-window"].clientHeight;
-      useCommonStore().updateCanvas++;
+
+      cs().gameWindow.w = this.$refs["game-window"].clientWidth;
+      cs().gameWindow.h = this.$refs["game-window"].clientHeight;
     },
   },
   computed: {
+    counter() {
+      return cs().gameFrame;
+    },
     outsideColor() {
       let brightness = "0.5";
-      if (useCommonStore().gameData.optionsSet) {
-        brightness = useCommonStore().gameData.optionsSet.outsideBrightness;
+      if (cs().gameData.optionsSet) {
+        brightness = cs().gameData.optionsSet.outsideBrightness;
         brightness = brightness / 100;
       }
       brightness = brightness * 255;
@@ -73,13 +71,19 @@ export default {
       getGameData();
     }
 
-    updateWindowSize(useCommonStore());
+    cs().window.w = window.innerWidth;
+    cs().window.h = window.innerHeight;
+
     this.updateGameWindowSize();
+
     window.addEventListener("resize", () => {
-      updateWindowSize(useCommonStore());
+      cs().window.w = window.innerWidth;
+      cs().window.h = window.innerHeight;
       this.updateGameWindowSize();
-      useCommonStore().updateCanvas++;
+      cs().updateCanvas++;
     });
+
+    cs().startGameFrame();
   },
 };
 </script>

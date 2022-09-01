@@ -16,9 +16,6 @@ Canvas(ref='canvas-wrapper' class='bg-[url("@/assets/common/ground.png")]')
     :prevPointX = 'enemy.prevPointX'
     :status= 'enemy.status'
   )
-  TextFieldOut(
-    :update = 'gameFrame'
-  )
 
 
 </template>
@@ -28,8 +25,7 @@ import Village from "@/components/Village.vue";
 import Canvas from "@/components/Canvas.vue";
 import Enemy from "@/components/Enemy.vue";
 import Character from "@/components/Character.vue";
-import TextFieldOut from "@/components/common/TextFieldOut.vue";
-import { useCommonStore } from "@/stores/CommonStore";
+import { useCommonStore as cs } from "@/stores/CommonStore";
 import { useVillageStore } from "@/stores/VillageStore";
 import { useEnemiesStore } from "@/stores/EnemiesStore";
 import { useCharacterStore } from "@/stores/CharacterStore";
@@ -40,7 +36,6 @@ export default {
     Canvas,
     Enemy,
     Character,
-    TextFieldOut,
   },
   data() {
     return {
@@ -72,13 +67,12 @@ export default {
     this.center.pointX = this.$el.clientWidth / 2;
     this.center.pointY = this.$el.clientHeight / 2;
 
-    useCommonStore().centerPoint.x = useCommonStore().canvas.width / 2;
-    useCommonStore().centerPoint.y = useCommonStore().canvas.height / 2;
+    cs().centerPoint.x = cs().gameWindow.w / 2;
+    cs().centerPoint.y = cs().gameWindow.h / 2;
 
     //main draw loop
     setInterval(() => {
       this.gameFrame++;
-      useCommonStore().gameFrame++;
 
       useEnemiesStore().move();
 

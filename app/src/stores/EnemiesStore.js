@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { useCommonStore } from "./CommonStore";
+import { useCommonStore as cs } from "./CommonStore";
 import { useVillageStore } from "./VillageStore";
 import { getTriangle } from "@/js/common";
 
@@ -14,8 +14,8 @@ export const useEnemiesStore = defineStore("EnemiesStore", {
   },
   actions: {
     _generateRandomSidePosition() {
-      const randomX = Math.random() * useCommonStore().canvas.width;
-      const randomY = Math.random() * useCommonStore().canvas.height;
+      const randomX = Math.random() * cs().gameWindow.w;
+      const randomY = Math.random() * cs().gameWindow.h;
       let pointX = null;
       let pointY = null;
 
@@ -29,7 +29,7 @@ export const useEnemiesStore = defineStore("EnemiesStore", {
         } else {
           // bottom
           pointX = randomX;
-          pointY = useCommonStore().canvas.height;
+          pointY = cs().gameWindow.y;
         }
       } else {
         // left or right
@@ -39,7 +39,7 @@ export const useEnemiesStore = defineStore("EnemiesStore", {
           pointY = randomY;
         } else {
           // right
-          pointX = useCommonStore().canvas.width;
+          pointX = cs().gameWindow.w;
           pointY = randomY;
         }
       }
@@ -84,8 +84,8 @@ export const useEnemiesStore = defineStore("EnemiesStore", {
         enemy.hypo -= enemy.speed;
         enemy.legH = Number((enemy.legH * enemy.ratio).toFixed(2));
         enemy.legV = Number((enemy.legV * enemy.ratio).toFixed(2));
-        enemy.pointX = useCommonStore().centerPoint.x - enemy.legH;
-        enemy.pointY = useCommonStore().centerPoint.y - enemy.legV;
+        enemy.pointX = cs().centerPoint.x - enemy.legH;
+        enemy.pointY = cs().centerPoint.y - enemy.legV;
       });
     },
   },

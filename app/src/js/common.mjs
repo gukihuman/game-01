@@ -18,11 +18,6 @@ export function updateCookie(cookie, options) {
   }
 }
 
-export function updateWindowSize(store) {
-  store.window.width = window.innerWidth;
-  store.window.height = window.innerHeight;
-}
-
 export function getGameData() {
   return new Promise(async (resolve, reject) => {
     let res = await axios.post("/api/getGameData", {

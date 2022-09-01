@@ -3,17 +3,31 @@ import { defineStore } from "pinia";
 export const useCommonStore = defineStore("CommonStore", {
   state: () => {
     return {
-      gameFrame: 0,
-      canvas: { width: null, height: null },
-      centerPoint: { x: null, y: null },
-      window: { width: null, height: null },
-      gameWindow: { width: null, height: null },
+      _gameFrameCycle: null,
       logged: false,
-      updateCanvas: 0,
-      fullscreen: false,
+      gameFrame: 0,
+      gameSpeed: 1,
+      window: { w: null, h: null },
+      gameWindow: { w: null, h: null },
       gameData: {
-        optionsSet: null,
+        optionsSet: {
+          outsideBrightness: 50,
+          animationSpeed: 1,
+        },
       },
+      centerPoint: { x: null, y: null },
     };
+  },
+  getters: {
+    gameWindowRatio: (state) => (state.gameWindow.h / 1080).toFixed(2),
+  },
+  actions: {
+    startGameFrame() {
+      this.gameFrame = 0;
+      clearInterval(this._gameFrameCycle);
+      this._gameFrameCycle = setInterval(() => {
+        this.gameFrame++;
+      }, 1000 / (60 * this.gameSpeed));
+    },
   },
 });

@@ -73,6 +73,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useCommonStore } from "@/stores/CommonStore";
 import { getGameData } from "@/js/common";
+import { updateGameData } from "@/js/common";
 
 export default {
   watch: {
@@ -127,6 +128,7 @@ export default {
         Object.keys(this.registerInput).forEach((key) => {
           this.registerInput[key] = "";
         });
+        updateGameData();
       } else {
         this.message = [];
         res.data.forEach((error) => {

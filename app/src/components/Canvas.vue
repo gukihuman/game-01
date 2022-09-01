@@ -1,10 +1,6 @@
 <template lang="pug">
 
-div(
-  class="w-full h-full overflow-hidden"
-  ref="canvas-wrapper"
-)
-
+div
   canvas(ref="canvas")
     slot
 
@@ -28,13 +24,12 @@ export default {
   },
   mounted() {
     this.provider.context = this.$refs.canvas.getContext("2d");
-    this.$refs.canvas.width = useCommonStore().gameWindow.width;
-    this.$refs.canvas.height = useCommonStore().gameWindow.height;
-    useCommonStore().canvas.width = this.$refs.canvas.width;
-    useCommonStore().canvas.height = this.$refs.canvas.height;
+    this.$refs.canvas.width = useCommonStore().gameWindow.w;
+    this.$refs.canvas.height = useCommonStore().gameWindow.h;
+
     window.addEventListener("resize", () => {
-      this.$refs.canvas.width = useCommonStore().gameWindow.width;
-      this.$refs.canvas.height = useCommonStore().gameWindow.height;
+      this.$refs.canvas.width = useCommonStore().gameWindow.w;
+      this.$refs.canvas.height = useCommonStore().gameWindow.h;
     });
   },
 };
