@@ -71,14 +71,14 @@ div(v-if='showMessage')
 <script>
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useCommonStore } from "@/stores/CommonStore";
+import { useCommonStore as cs } from "@/stores/CommonStore";
 import { getGameData } from "@/js/common";
 import { updateGameData } from "@/js/common";
 
 export default {
   watch: {
     logged(newValue) {
-      useCommonStore().logged = newValue;
+      cs().logged = newValue;
     },
   },
   data() {
@@ -128,12 +128,13 @@ export default {
         Object.keys(this.registerInput).forEach((key) => {
           this.registerInput[key] = "";
         });
-        updateGameData();
+        console.log("Registeration successful! Empty gameData is set.");
       } else {
         this.message = [];
         res.data.forEach((error) => {
           this.message.push(error);
         });
+        console.log("Registeration failed.");
       }
     },
     async login() {
@@ -152,10 +153,13 @@ export default {
         });
         Cookies.set("username", this.username, { expires: 7 });
         Cookies.set("jwttoken", res.data.jwttoken, { expires: 7 });
+
         getGameData();
+        console.log("Login successful! gameData is fetched.");
       } else {
         this.message = [];
         this.message.push(res.data);
+        console.log("Login failed.");
       }
     },
     logout() {

@@ -68,7 +68,13 @@ export default {
     updateCookie("username");
 
     if (Cookies.get("jwttoken") && Cookies.get("username")) {
-      getGameData();
+      getGameData().then(() => {
+        console.log("App is mounted. Data fetched.");
+        console.log(cs().gameData);
+      });
+    } else {
+      console.log("App is mounted with default Data for guest");
+      console.log(cs().gameData);
     }
 
     cs().window.w = window.innerWidth;
@@ -80,7 +86,6 @@ export default {
       cs().window.w = window.innerWidth;
       cs().window.h = window.innerHeight;
       this.updateGameWindowSize();
-      cs().updateCanvas++;
     });
 
     cs().startGameFrame();

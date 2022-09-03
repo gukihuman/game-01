@@ -75,20 +75,24 @@ export default {
       }, 2000 / this.animationSpeed);
     },
     _timeoutFieldIn() {
-      this.isTextFieldNone = false;
+      setTimeout(() => {
+        this.isTextFieldNone = false;
+      }, 2000 / 16 / this.animationSpeed);
       this.isTextFieldIn = true;
       setTimeout(() => {
         this.isTextField = true;
         this.isTextFieldIn = false;
-      }, 2000 / this.animationSpeed);
+      }, ((2000 / 16) * 15) / this.animationSpeed);
     },
     _timeoutFieldOut() {
-      this.isTextField = false;
+      setTimeout(() => {
+        this.isTextField = false;
+      }, 2000 / 16 / this.animationSpeed);
       this.isTextFieldOut = true;
       setTimeout(() => {
         this.isTextFieldNone = true;
         this.isTextFieldOut = false;
-      }, 2000 / this.animationSpeed);
+      }, ((2000 / 16) * 15) / this.animationSpeed);
     },
     _fillFrames() {
       this.frameStep = 0;

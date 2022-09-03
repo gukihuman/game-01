@@ -15,43 +15,45 @@ div
   )
 
 button(@click='saveChanges()') OK
+button(@click='cancel()') Cancel
 
 </template>
 
 <script>
 import { useCommonStore as cs } from "@/stores/CommonStore";
-import { getGameData } from "@/js/common";
 import { updateGameData } from "@/js/common";
 
 export default {
   props: ["toggleOptions"],
   data() {
     return {
-      optionsSet: {
-        outsideBrightness: 50,
-        animationSpeed: 1,
-      },
+      startingOptionsSet: {},
+      optionsSet: {},
     };
   },
   methods: {
     saveChanges() {
       cs().gameData.optionsSet = this.optionsSet;
       updateGameData();
-      console.log(this.optionsSet);
+      console.log("gameData.optionsSet is pushed to the server.");
+      console.log(cs().gameData.optionsSet);
+      this.toggleOptions();
+    },
+    cancel() {
+      cs().gameData.optionsSet = this.startingOptionsSet;
+      console.log("gameData.optionsSet set to starting state.");
+      console.log(cs().gameData.optionsSet);
       this.toggleOptions();
     },
   },
   mounted() {
-    getGameData().then(() => {
-      if (!cs().gameData.optionsSet) {
-        cs().gameData.optionsSet = this.optionsSet;
-      } else {
-        this.optionsSet = cs().gameData.optionsSet;
-      }
-      this.$refs["outside-brightness"].addEventListener("input", () => {
-        cs().gameData.optionsSet.outsideBrightness =
-          this.optionsSet.outsideBrightness;
-      });
+    this.startingOptionsSet = JSON.parse(
+      JSON.stringify(cs().gameData.optionsSet)
+    );
+    this.optionsSet = cs().gameData.optionsSet;
+    this.$refs["outside-brightness"].addEventListener("input", () => {
+      cs().gameData.optionsSet.outsideBrightness =
+        this.optionsSet.outsideBrightness;
     });
   },
 };
