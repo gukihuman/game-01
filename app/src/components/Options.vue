@@ -1,34 +1,61 @@
 <template lang="pug">
 
-
 div
-  label(htmlFor='outside-brightness') Outside Brightness
-  input(
-    id='outside-brightness'
-    ref='outside-brightness'
-    type='range'
-    min='1'
-    max='100'
-    v-model='optionsSet.outsideBrightness'
-    class="w-80 h-30 bg-gradient-to-r from-black to-white relative \
-    rounded-lg appearance-none"
-  )
+  div
+    label(htmlFor='outside-brightness')
+      p Outside Brightness
+    input(
+      id='outside-brightness'
+      ref='outside-brightness'
+      type='range'
+      min='1'
+      max='100'
+      v-model='optionsSet.outsideBrightness'
+      class="w-80 h-30 bg-gradient-to-r from-black to-white relative \
+      rounded-lg appearance-none"
+    )
+  
+  div
+    label(htmlFor='text-speed')
+      p Text Speed: {{this.textSpeedForShow}}
+    input(
+      id='text-speed'
+      ref='text-speed'
+      type='range'
+      min='1'
+      max='100'
+      v-model='optionsSet.textSpeed'
+      class="w-80 h-30 bg-slate-700 relative \
+      rounded-lg appearance-none"
+    )
 
-button(@click='saveChanges()') OK
-button(@click='cancel()') Cancel
+  Text(
+    :textSpeed='optionsSet.textSpeed'
+    :frameStep='frameStep'
+    @nextStep='nextStep()'
+    @clear='clearFrameStep()'
+    )
+
+  button(@click='saveChanges()') OK
+  button(@click='cancel()') Cancel
 
 </template>
 
 <script>
 import { useCommonStore as cs } from "@/stores/CommonStore";
 import { updateGameData } from "@/js/common";
+import Text from "@/components/stories/common/Text";
 
 export default {
   props: ["toggleOptions"],
+  components: {
+    Text,
+  },
   data() {
     return {
       startingOptionsSet: {},
       optionsSet: {},
+      frameStep: 0,
     };
   },
   methods: {
@@ -44,6 +71,21 @@ export default {
       console.log("gameData.optionsSet set to starting state.");
       console.log(cs().gameData.optionsSet);
       this.toggleOptions();
+    },
+    nextStep() {
+      this.frameStep++;
+    },
+    clearFrameStep() {
+      this.frameStep = 0;
+    },
+  },
+  computed: {
+    textSpeedForShow() {
+      if (this.optionsSet.textSpeed == 100) {
+        return "Immediately";
+      } else {
+        return this.optionsSet.textSpeed;
+      }
     },
   },
   mounted() {
@@ -73,6 +115,22 @@ export default {
   width: 40px;
   height: 35px;
   border: solid 4px #f4a261;
+  border-radius: 8px;
+  cursor: pointer;
+}
+#text-speed::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  -appearance: none;
+  width: 40px;
+  height: 25px;
+  background-color: #f4a261;
+  border-radius: 8px;
+  cursor: pointer;
+}
+#text-speed::-moz-range-thumb {
+  width: 40px;
+  height: 25px;
+  background-color: #f4a261;
   border-radius: 8px;
   cursor: pointer;
 }

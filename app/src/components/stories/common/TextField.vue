@@ -13,19 +13,17 @@ div
     class='absolute'
     :style='textFieldStyle'
   )
-  Canvas(class='absolute top-0' ref='canvas')
+  Canvas(v-if='isCanvas' class='absolute top-0' ref='canvas')
     TextFieldIn(
       v-if='isTextFieldIn'
       :drawFrames='drawFrames'
       :frameStep='frameStep'
-      :gameFrame='gameFrame'
       @nextStep='nextStep()'
     )
     TextFieldOut(
       v-if='isTextFieldOut'
       :drawFrames='drawFrames'
       :frameStep='frameStep'
-      :gameFrame='gameFrame'
       @nextStep='nextStep()'
     )
   button(
@@ -52,12 +50,12 @@ export default {
   },
   data() {
     return {
-      clearCanvasInterval: null,
       isTextField: false,
       isTextFieldNone: true,
       isTextFieldIn: false,
       isTextFieldOut: false,
       showToggleButton: true,
+      animationSpeed: 1,
       drawFrames: [],
       frameStep: 0,
     };
@@ -115,13 +113,14 @@ export default {
     },
   },
   computed: {
-    animationSpeed() {
-      return 1;
+    isCanvas() {
+      if (this.isTextFieldOut || this.isTextFieldIn) {
+        return true;
+      } else {
+        return false;
+      }
     },
-    gameFrame() {
-      return cs().gameFrame;
-    },
-    textFieldSize() {
+    _textFieldSize() {
       return {
         h: (spriteInfo.frames[0].sourceSize.h * cs().gameWindowRatio).toFixed(),
         w: (spriteInfo.frames[0].sourceSize.w * cs().gameWindowRatio).toFixed(),
@@ -129,9 +128,9 @@ export default {
     },
     textFieldStyle() {
       return {
-        height: `${this.textFieldSize.h}px`,
-        top: `${cs().gameWindow.h - this.textFieldSize.h}px`,
-        left: `${(cs().gameWindow.w - this.textFieldSize.w) / 2}px`,
+        height: `${this._textFieldSize.h}px`,
+        top: `${cs().gameWindow.h - this._textFieldSize.h}px`,
+        left: `${(cs().gameWindow.w - this._textFieldSize.w) / 2}px`,
       };
     },
     toggleButtonStyle() {
@@ -149,19 +148,6 @@ export default {
   },
   mounted() {
     this.toggleTextField();
-
-    this.clearCanvasInterval = setInterval(() => {
-      if (
-        !this.isTextFieldIn &&
-        !this.isTextFieldOut &&
-        this.$refs["canvas"].provider
-      ) {
-        this.$refs["canvas"].provider.context.clearRect(0, 0, 6000, 6000);
-      }
-    }, 1000);
-  },
-  unmounted() {
-    clearInterval(this.clearCanvasInterval);
   },
 };
 </script>

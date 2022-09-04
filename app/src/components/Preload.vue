@@ -13,7 +13,12 @@ const pngFiles = {
   common: ["village", "ground"],
 };
 const webpFiles = {
-  "stories/common": ["text-field-out", "text-field-in"],
+  "stories/common": [
+    "text-field-out",
+    "text-field-in",
+    "text-field",
+    "text-field-none",
+  ],
   "stories/prologue/forest": [
     "forest",
     "angry",

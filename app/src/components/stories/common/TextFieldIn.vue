@@ -4,7 +4,7 @@ import { useCommonStore as cs } from "@/stores/CommonStore";
 
 export default {
   inject: ["provider"],
-  props: ["drawFrames", "gameFrame", "frameStep"],
+  props: ["drawFrames", "frameStep"],
   render() {
     if (!this.provider.context) return;
 
@@ -17,7 +17,7 @@ export default {
     const width = originWidth * cs().gameWindowRatio;
     const height = originHeight * cs().gameWindowRatio;
 
-    if (this.drawFrames[this.frameStep] == this.gameFrame) {
+    if (this.drawFrames[this.frameStep] == cs().gameFrame) {
       this.$emit("nextStep");
 
       this.provider.context.drawImage(

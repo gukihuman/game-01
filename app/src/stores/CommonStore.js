@@ -6,13 +6,12 @@ export const useCommonStore = defineStore("CommonStore", {
       _gameFrameCycle: null,
       logged: false,
       gameFrame: 0,
-      gameSpeed: 1,
       window: { w: null, h: null },
       gameWindow: { w: null, h: null },
       gameData: {
         optionsSet: {
           outsideBrightness: 50,
-          animationSpeed: 1,
+          textSpeed: 50,
         },
       },
       centerPoint: { x: null, y: null },
@@ -27,7 +26,7 @@ export const useCommonStore = defineStore("CommonStore", {
       clearInterval(this._gameFrameCycle);
       this._gameFrameCycle = setInterval(() => {
         this.gameFrame++;
-      }, 1000 / (60 * this.gameSpeed));
+      }, 1000 / 60);
     },
   },
 });

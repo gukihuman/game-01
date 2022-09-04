@@ -63,13 +63,13 @@ export function updateGameData() {
       jwttoken: Cookies.get("jwttoken"),
       gameData: cs().gameData,
     });
-    if (res.data != "OK") {
+    if (res.data == "OK") {
+      console.log("gameData is pushed to the server successfully!");
+      console.log(cs().gameData);
+    } else {
       alert(res.data);
       Cookies.remove("jwttoken");
       Cookies.remove("username");
-    } else {
-      console.log("gameData is pushed to the server successfully!");
-      console.log(cs().gameData);
     }
     resolve();
   });
