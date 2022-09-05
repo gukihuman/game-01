@@ -7,10 +7,18 @@ div
     :style='textFieldStyle'
   )
 
-  p(
-    class='absolute align-middle'
+  div(
+    ref='text-container'
+    class='absolute flex items-center justify-center flex-wrap'
     :style='textStyle'
-  ) {{contentFilled}}
+    )
+    span(
+      v-for='(word, index) in textArray'
+      :key='index'
+      class='blur-sm opacity-0 cursor-pointer'
+      :style='spanStyle(index)'
+    )
+      | {{word}}&nbsp
 
 </template>
 
@@ -19,49 +27,59 @@ import { useCommonStore as cs } from "@/stores/CommonStore";
 import spriteInfo from "@/assets/stories/common/text-field-in.json";
 
 export default {
-  props: ["textSpeed", "frameStep"],
+  props: ["textSpeed", "textImmediately"],
   watch: {
     textSpeed() {
-      this.startFillingText();
+      this.refresh();
+    },
+    textImmediately() {
+      this.refresh();
     },
   },
   data() {
     return {
+      listeners: {
+        refresh: null,
+      },
       w: 593,
       h: 121,
       topOffset: 90,
       content:
         "Fuck my ass, daddy! Please! I need it so bad! Oh..." +
         "Harder! Oh my God! Just like that! Oh yes!",
-      contentFillStore: "",
-      contentArray: [],
-      drawFrames: [],
+      remember: "",
+      delay: 5,
     };
   },
   methods: {
-    startFillingText() {
-      this.$emit("clear");
-      this.contentFillStore = "";
-      this.contentArray = this.content.split("");
-      this.drawFrames = [];
-      for (let i = 0; i < this.contentArray.length; i++) {
-        this.drawFrames.push(
-          Math.floor(cs().gameFrame + (i * 50) / this.textSpeed + 10)
-        );
+    refresh() {
+      this.content = "";
+      setTimeout(() => {
+        this.content = this.remember;
+      }, (1000 / 60) * this.delay);
+    },
+    spanStyle(index) {
+      if (this.textImmediately == false) {
+        return {
+          animation: `fade-in ${(0.8 - this.textSpeed / 180).toFixed(1)}s ${
+            ((index / 10) * (100 - this.textSpeed)) / 50
+          }s forwards cubic-bezier(0.11, 0, 0.5, 0)`,
+        };
+      } else {
+        return {
+          opacity: 1,
+          filter: "blur(0)",
+        };
       }
     },
   },
   computed: {
-    contentFilled() {
-      if (this.drawFrames[this.frameStep] == cs().gameFrame) {
-        this.$emit("nextStep");
-        this.contentFillStore += this.contentArray[this.frameStep];
+    textArray() {
+      if (this.content.includes(" ")) {
+        return [""].concat(this.content.split(" "));
+      } else {
+        return [this.content];
       }
-      if (this.frameStep == this.content.length) {
-        this.$emit("clear");
-        console.log("done");
-      }
-      return this.contentFillStore;
     },
     _textFieldSize() {
       return {
@@ -87,7 +105,7 @@ export default {
     },
     textStyle() {
       return {
-        width: `${this._textSize.w}px`,
+        "max-width": `${this._textSize.w}px`,
         height: `${this._textSize.h}px`,
         top: `${
           cs().gameWindow.h - this._textFieldSize.h + this._textTopOffset
@@ -98,5 +116,27 @@ export default {
       };
     },
   },
+  mounted() {
+    this.remember = this.content;
+
+    this.listeners.refresh = this.$refs["text-container"].addEventListener(
+      "click",
+      () => {
+        this.refresh();
+      }
+    );
+  },
+  unmounted() {
+    clearTimeout(this.listeners.refresh);
+  },
 };
 </script>
+
+<style>
+@keyframes fade-in {
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+</style>

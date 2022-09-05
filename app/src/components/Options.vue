@@ -17,10 +17,9 @@ div
   
   div
     label(htmlFor='text-speed')
-      p Text Speed: {{this.textSpeedForShow}}
+      p Text Speed: {{this.optionsSet.textSpeed}}
     input(
       id='text-speed'
-      ref='text-speed'
       type='range'
       min='1'
       max='100'
@@ -28,12 +27,20 @@ div
       class="w-80 h-30 bg-slate-700 relative \
       rounded-lg appearance-none"
     )
+  div
+    label(htmlFor='text-immediately')
+      p(class='inline-block') Text Immediately
+    input(
+      id='text-immediately'
+      type='checkbox'
+      v-model='optionsSet.textImmediately'
+      class="w-6 h-6 "
+      )
 
   Text(
     :textSpeed='optionsSet.textSpeed'
-    :frameStep='frameStep'
-    @nextStep='nextStep()'
-    @clear='clearFrameStep()'
+    :textImmediately='optionsSet.textImmediately'
+    class='relative -top-[350px] -left-[300px] '
     )
 
   button(@click='saveChanges()') OK
@@ -53,6 +60,9 @@ export default {
   },
   data() {
     return {
+      listeners: {
+        outsideBrightness: null,
+      },
       startingOptionsSet: {},
       optionsSet: {},
       frameStep: 0,
@@ -72,31 +82,22 @@ export default {
       console.log(cs().gameData.optionsSet);
       this.toggleOptions();
     },
-    nextStep() {
-      this.frameStep++;
-    },
-    clearFrameStep() {
-      this.frameStep = 0;
-    },
-  },
-  computed: {
-    textSpeedForShow() {
-      if (this.optionsSet.textSpeed == 100) {
-        return "Immediately";
-      } else {
-        return this.optionsSet.textSpeed;
-      }
-    },
   },
   mounted() {
     this.startingOptionsSet = JSON.parse(
       JSON.stringify(cs().gameData.optionsSet)
     );
     this.optionsSet = cs().gameData.optionsSet;
-    this.$refs["outside-brightness"].addEventListener("input", () => {
+
+    this.listeners.outsideBrightness = this.$refs[
+      "outside-brightness"
+    ].addEventListener("input", () => {
       cs().gameData.optionsSet.outsideBrightness =
         this.optionsSet.outsideBrightness;
     });
+  },
+  unmounted() {
+    clearTimeout(this.listeners.outsideBrightness);
   },
 };
 </script>

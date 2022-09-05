@@ -10,8 +10,9 @@ export const useCommonStore = defineStore("CommonStore", {
       gameWindow: { w: null, h: null },
       gameData: {
         optionsSet: {
-          outsideBrightness: 50,
-          textSpeed: 50,
+          outsideBrightness: 25,
+          textSpeed: 25,
+          textImmediately: false,
         },
       },
       centerPoint: { x: null, y: null },
