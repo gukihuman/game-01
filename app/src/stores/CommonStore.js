@@ -12,6 +12,7 @@ export const useCommonStore = defineStore("CommonStore", {
         optionsSet: {
           outsideBrightness: 25,
           textSpeed: 25,
+          textBlur: true,
           textImmediately: false,
         },
       },

@@ -12,13 +12,13 @@ div
     class='absolute flex items-center justify-center flex-wrap'
     :style='textStyle'
     )
-    span(
+    p(
       v-for='(word, index) in textArray'
       :key='index'
-      class='blur-sm opacity-0 cursor-pointer'
+      class='opacity-0 cursor-pointer'
       :style='spanStyle(index)'
     )
-      | {{word}}&nbsp
+      | {{word}}
 
 </template>
 
@@ -27,12 +27,15 @@ import { useCommonStore as cs } from "@/stores/CommonStore";
 import spriteInfo from "@/assets/stories/common/text-field-in.json";
 
 export default {
-  props: ["textSpeed", "textImmediately"],
+  props: ["textSpeed", "textBlur", "textImmediately"],
   watch: {
     textSpeed() {
       this.refresh();
     },
     textImmediately() {
+      this.refresh();
+    },
+    textBlur() {
       this.refresh();
     },
   },
@@ -45,8 +48,8 @@ export default {
       h: 121,
       topOffset: 90,
       content:
-        "Fuck my ass, daddy! Please! I need it so bad! Oh..." +
-        "Harder! Oh my God! Just like that! Oh yes!",
+        "Fuck my ass, daddy! / Please! / I need it so bad! / Oh... / " +
+        "Harder! / Oh my God! / Just like that! / Oh yes!",
       remember: "",
       delay: 5,
     };
@@ -62,8 +65,9 @@ export default {
       if (this.textImmediately == false) {
         return {
           animation: `fade-in ${(0.8 - this.textSpeed / 180).toFixed(1)}s ${
-            ((index / 10) * (100 - this.textSpeed)) / 50
+            ((index / 10) * (100 - this.textSpeed)) / 25
           }s forwards cubic-bezier(0.11, 0, 0.5, 0)`,
+          filter: this.isBlur,
         };
       } else {
         return {
@@ -74,9 +78,26 @@ export default {
     },
   },
   computed: {
+    isBlur() {
+      if (this.textBlur) {
+        let blur = (6 * cs().gameWindowRatio).toFixed(2);
+        return `blur(${blur}px)`;
+      } else {
+        return "blur(0)";
+      }
+    },
     textArray() {
       if (this.content.includes(" ")) {
-        return [""].concat(this.content.split(" "));
+        let array = [""].concat(this.content.split(" "));
+        let newArray = [];
+        array.forEach((word) => {
+          if (word == "/") {
+            newArray.push("");
+          } else {
+            newArray.push(word + "\xa0");
+          }
+        });
+        return newArray;
       } else {
         return [this.content];
       }

@@ -16,32 +16,42 @@ div
     )
   
   div
-    label(htmlFor='text-speed')
-      p Text Speed: {{this.optionsSet.textSpeed}}
-    input(
-      id='text-speed'
-      type='range'
-      min='1'
-      max='100'
-      v-model='optionsSet.textSpeed'
-      class="w-80 h-30 bg-slate-700 relative \
-      rounded-lg appearance-none"
-    )
-  div
-    label(htmlFor='text-immediately')
-      p(class='inline-block') Text Immediately
-    input(
-      id='text-immediately'
-      type='checkbox'
-      v-model='optionsSet.textImmediately'
-      class="w-6 h-6 "
+    div
+      label(htmlFor='text-speed')
+        p Text Speed: {{this.optionsSet.textSpeed}}
+      input(
+        id='text-speed'
+        type='range'
+        min='1'
+        max='100'
+        v-model='optionsSet.textSpeed'
+        class="w-80 h-30 bg-slate-700 relative \
+        rounded-lg appearance-none"
       )
+    div
+      label(htmlFor='text-blur')
+        p(class='inline-block') Text Blur
+      input(
+        id='text-blur'
+        type='checkbox'
+        v-model='optionsSet.textBlur'
+        class="w-8 h-6 "
+        )
+    div
+      label(htmlFor='text-immediately')
+        p(class='inline-block') Text Immediately
+      input(
+        id='text-immediately'
+        type='checkbox'
+        v-model='optionsSet.textImmediately'
+        class="w-8 h-6 "
+        )
 
-  Text(
-    :textSpeed='optionsSet.textSpeed'
-    :textImmediately='optionsSet.textImmediately'
-    class='relative -top-[350px] -left-[300px] '
-    )
+    Text(
+      :textSpeed='optionsSet.textSpeed'
+      :textBlur='optionsSet.textBlur'
+      :textImmediately='optionsSet.textImmediately'
+      )
 
   button(@click='saveChanges()') OK
   button(@click='cancel()') Cancel
