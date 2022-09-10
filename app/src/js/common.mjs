@@ -2,6 +2,14 @@ import { useCommonStore as cs } from "@/stores/CommonStore";
 import Cookies from "js-cookie";
 import axios from "axios";
 
+export function debounce(callback, delay) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => callback(...args), delay);
+  };
+}
+
 export function getTriangle(pointX, pointY) {
   const legH = cs().centerPoint.x - pointX;
   const legV = cs().centerPoint.y - pointY;

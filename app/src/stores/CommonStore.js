@@ -15,6 +15,15 @@ export const useCommonStore = defineStore("CommonStore", {
           textBlur: true,
           textImmediately: false,
         },
+        story: {
+          stage: "prologue",
+          scene: "forest",
+          step: "0",
+        },
+      },
+      personColors: {
+        player: "#343434",
+        grace: "#542516",
       },
       centerPoint: { x: null, y: null },
     };

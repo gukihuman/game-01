@@ -1,6 +1,12 @@
 <template lang="pug">
 
 div
+  img(
+    :src="require('@/assets/stories/common/text-field.webp')"
+    class='absolute'
+    :style='textFieldStyle'
+  )
+
   div(
     ref='text-container'
     class='absolute flex items-center justify-center flex-wrap w-full'
@@ -9,7 +15,7 @@ div
     p(
       v-for='(word, index) in textArray'
       :key='index'
-      class='opacity-0 cursor-default'
+      class='opacity-0 cursor-pointer'
       :style='spanStyle(index)'
     )
       | {{word}}
@@ -21,7 +27,18 @@ import { useCommonStore as cs } from "@/stores/CommonStore";
 import spriteInfo from "@/assets/stories/common/text-field-in.json";
 
 export default {
-  props: ["content", "color"],
+  props: ["textSpeed", "textBlur", "textImmediately"],
+  watch: {
+    textSpeed() {
+      this.refresh();
+    },
+    textImmediately() {
+      this.refresh();
+    },
+    textBlur() {
+      this.refresh();
+    },
+  },
   data() {
     return {
       listeners: {
@@ -30,6 +47,9 @@ export default {
       w: 593,
       h: 121,
       topOffset: 90,
+      content:
+        "Fuck my ass, daddy! / Please! / I need it so bad! / Oh... / " +
+        "Harder! / Oh my God! / Just like that! / Oh yes!",
       remember: "",
       delay: 5,
     };
@@ -58,15 +78,6 @@ export default {
     },
   },
   computed: {
-    textSpeed() {
-      return cs().gameData.optionsSet.textSpeed;
-    },
-    textBlur() {
-      return cs().gameData.optionsSet.textBlur;
-    },
-    textImmediately() {
-      return cs().gameData.optionsSet.textImmediately;
-    },
     isBlur() {
       if (this.textBlur) {
         let blur = (2 * cs().gameWindowRatio).toFixed(2);
@@ -97,6 +108,13 @@ export default {
         w: (spriteInfo.frames[0].sourceSize.w * cs().gameWindowRatio).toFixed(),
       };
     },
+    textFieldStyle() {
+      return {
+        height: `${this._textFieldSize.h}px`,
+        top: `${cs().gameWindow.h - this._textFieldSize.h}px`,
+        left: `${(cs().gameWindow.w - this._textFieldSize.w) / 2}px`,
+      };
+    },
     _textSize() {
       return {
         w: (this.w * cs().gameWindowRatio).toFixed(),
@@ -116,12 +134,21 @@ export default {
         left: `${(cs().gameWindow.w - this._textSize.w) / 2}px`,
         fontSize: `${32 * cs().gameWindowRatio}px`,
         "line-height": `${39 * cs().gameWindowRatio}px`,
-        color: `${this.color}`,
       };
     },
   },
   mounted() {
     this.remember = this.content;
+
+    this.listeners.refresh = this.$refs["text-container"].addEventListener(
+      "click",
+      () => {
+        this.refresh();
+      }
+    );
+  },
+  unmounted() {
+    clearTimeout(this.listeners.refresh);
   },
 };
 </script>

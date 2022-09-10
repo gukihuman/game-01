@@ -18,7 +18,7 @@ export default {
     const height = originHeight * cs().gameWindowRatio;
 
     if (this.drawFrames[this.frameStep] == cs().gameFrame) {
-      this.$emit("nextStep");
+      this.$emit("nextFrameStep");
 
       this.provider.context.drawImage(
         image,

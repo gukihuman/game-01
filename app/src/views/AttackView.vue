@@ -21,10 +21,10 @@ Canvas(ref='canvas-wrapper' class='bg-[url("@/assets/common/ground.png")]')
 </template>
 
 <script>
-import Village from "@/components/Village.vue";
+import Village from "@/components/attack/Village.vue";
 import Canvas from "@/components/Canvas.vue";
-import Enemy from "@/components/Enemy.vue";
-import Character from "@/components/Character.vue";
+import Enemy from "@/components/attack/Enemy.vue";
+import Character from "@/components/attack/Character.vue";
 import { useCommonStore as cs } from "@/stores/CommonStore";
 import { useVillageStore } from "@/stores/VillageStore";
 import { useEnemiesStore } from "@/stores/EnemiesStore";

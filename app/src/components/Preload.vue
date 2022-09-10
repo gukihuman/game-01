@@ -21,11 +21,14 @@ const webpFiles = {
   ],
   "stories/prologue/forest": [
     "forest",
+    "blush",
     "angry",
     "drill",
     "eyes-side",
     "tongue",
   ],
+  "stories/prologue/house": ["grace", "house-candle", "house"],
+  "stories/prologue/village": ["smile", "village"],
 };
 
 function putIn(files, format) {

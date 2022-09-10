@@ -47,7 +47,7 @@ div
         class="w-8 h-6 "
         )
 
-    Text(
+    OptionsText(
       :textSpeed='optionsSet.textSpeed'
       :textBlur='optionsSet.textBlur'
       :textImmediately='optionsSet.textImmediately'
@@ -61,12 +61,12 @@ div
 <script>
 import { useCommonStore as cs } from "@/stores/CommonStore";
 import { updateGameData } from "@/js/common";
-import Text from "@/components/stories/common/Text";
+import OptionsText from "@/components/OptionsText";
 
 export default {
   props: ["toggleOptions"],
   components: {
-    Text,
+    OptionsText,
   },
   data() {
     return {

@@ -9,12 +9,13 @@ justify-center items-center" :style='outsideColor')
     router-view(v-slot='{Component}')
       transition(name="fade" mode='out-in')
         component(:is="Component")
-    p(class='absolute top-40 right-5 z-20') {{counter}}
+    DevTools
 
 </template>
 
 <script>
 import Preload from "@/components/Preload.vue";
+import DevTools from "@/components/DevTools.vue";
 import { updateCookie } from "@/js/common";
 import { useCommonStore as cs } from "@/stores/CommonStore";
 import { getGameData } from "@/js/common";
@@ -23,6 +24,7 @@ import Cookies from "js-cookie";
 export default {
   components: {
     Preload,
+    DevTools,
   },
   methods: {
     toggleFullscreen() {
@@ -49,9 +51,6 @@ export default {
     },
   },
   computed: {
-    counter() {
-      return cs().gameFrame;
-    },
     outsideColor() {
       let brightness = "0.5";
       if (cs().gameData.optionsSet) {

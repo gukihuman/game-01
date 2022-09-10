@@ -13,25 +13,34 @@ div
     class='absolute'
     :style='textFieldStyle'
   )
+
   Canvas(v-if='isCanvas' class='absolute top-0' ref='canvas')
     TextFieldIn(
       v-if='isTextFieldIn'
       :drawFrames='drawFrames'
       :frameStep='frameStep'
-      @nextStep='nextStep()'
+      @nextFrameStep='nextFrameStep()'
     )
     TextFieldOut(
       v-if='isTextFieldOut'
       :drawFrames='drawFrames'
       :frameStep='frameStep'
-      @nextStep='nextStep()'
+      @nextFrameStep='nextFrameStep()'
     )
+  button(
+    v-if='isStoryButton'
+    @click='nextStoryStep()'
+    class='absolute top-0 cursor-default appearance-none'
+    :style='stepButtonStyle'
+  )
   button(
     v-if='showToggleButton'
     class='absolute bg-red-500/20 rounded-full blur-sm'
     :style='toggleButtonStyle'
     @click='toggleTextField'
   )
+
+  Text(v-if='isText' :content='text' :color='color')
 
 </template>
 
@@ -41,19 +50,26 @@ import Canvas from "@/components/Canvas.vue";
 import TextFieldIn from "@/components/stories/common/TextFieldIn.vue";
 import TextFieldOut from "@/components/stories/common/TextFieldOut.vue";
 import spriteInfo from "@/assets/stories/common/text-field-in.json";
+import Text from "@/components/stories/common/Text.vue";
+import { debounce } from "@/js/common";
+import { updateGameData } from "@/js/common";
 
 export default {
+  props: ["text", "color"],
   components: {
     Canvas,
+    Text,
     TextFieldIn,
     TextFieldOut,
   },
   data() {
     return {
+      isText: false,
       isTextField: false,
       isTextFieldNone: true,
       isTextFieldIn: false,
       isTextFieldOut: false,
+      isStoryButton: false,
       showToggleButton: true,
       animationSpeed: 1,
       drawFrames: [],
@@ -61,7 +77,12 @@ export default {
     };
   },
   methods: {
-    nextStep() {
+    nextStoryStep() {
+      cs().gameData.story.step++;
+      this.delayedUpdateGameData();
+      console.log(cs().gameData.story.step);
+    },
+    nextFrameStep() {
       if (!this.$refs["canvas"]) return;
       this.$refs["canvas"].provider.context.clearRect(0, 0, 6000, 6000);
       this.frameStep++;
@@ -73,20 +94,24 @@ export default {
       }, 2000 / this.animationSpeed);
     },
     _timeoutFieldIn() {
+      this.isTextFieldIn = true;
       setTimeout(() => {
         this.isTextFieldNone = false;
       }, 2000 / 16 / this.animationSpeed);
-      this.isTextFieldIn = true;
       setTimeout(() => {
         this.isTextField = true;
         this.isTextFieldIn = false;
+        this.isText = true;
+        this.isStoryButton = true;
       }, ((2000 / 16) * 15) / this.animationSpeed);
     },
     _timeoutFieldOut() {
+      this.isStoryButton = false;
+      this.isText = false;
+      this.isTextFieldOut = true;
       setTimeout(() => {
         this.isTextField = false;
       }, 2000 / 16 / this.animationSpeed);
-      this.isTextFieldOut = true;
       setTimeout(() => {
         this.isTextFieldNone = true;
         this.isTextFieldOut = false;
@@ -145,9 +170,19 @@ export default {
         left: `${leftOffset.toFixed()}px`,
       };
     },
+    stepButtonStyle() {
+      return {
+        width: `${cs().gameWindow.w}px`,
+        height: `${cs().gameWindow.h}px`,
+      };
+    },
   },
   mounted() {
     this.toggleTextField();
+    this.delayedUpdateGameData = debounce(() => {
+      updateGameData();
+      console.log("Data is sent");
+    }, 2000);
   },
 };
 </script>
