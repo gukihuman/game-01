@@ -4,7 +4,7 @@ Preload
 
 main(id="main" ref="main" class="h-screen w-screen overflow-hidden flex \
 justify-center items-center" :style='outsideColor')
-  div(ref='game-window' class='bg-slate-500 relative')
+  div(ref='game-window' class='bg-slate-500 relative overflow-hidden')
     button(@click='toggleFullscreen()' class='absolute top-5 right-5 z-20') Fullscreen
     router-view(v-slot='{Component}')
       transition(name="fade" mode='out-in')

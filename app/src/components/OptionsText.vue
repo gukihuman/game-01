@@ -134,6 +134,7 @@ export default {
         left: `${(cs().gameWindow.w - this._textSize.w) / 2}px`,
         fontSize: `${32 * cs().gameWindowRatio}px`,
         "line-height": `${39 * cs().gameWindowRatio}px`,
+        color: cs().personColors.grace,
       };
     },
   },

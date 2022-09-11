@@ -163,12 +163,24 @@ export default {
       let w = 50 * cs().gameWindowRatio;
       let bottomOffset = (42 - h / 2) * cs().gameWindowRatio;
       let leftOffset = (688 - w / 2) * cs().gameWindowRatio;
-      return {
-        width: `${w.toFixed()}px`,
-        height: `${h.toFixed()}px`,
-        top: `${(cs().gameWindow.h - h - bottomOffset).toFixed()}px`,
-        left: `${leftOffset.toFixed()}px`,
-      };
+      if (this.isTextField) {
+        return {
+          width: `${w.toFixed()}px`,
+          height: `${h.toFixed()}px`,
+          top: `${(cs().gameWindow.h - h - bottomOffset).toFixed()}px`,
+          left: `${leftOffset.toFixed()}px`,
+        };
+      } else {
+        return {
+          width: `${cs().gameWindow.w}px`,
+          height: `${cs().gameWindow.h}px`,
+          top: "0",
+          left: "0",
+          background: "none",
+          "border-radius": "0",
+          cursor: "default",
+        };
+      }
     },
     stepButtonStyle() {
       return {

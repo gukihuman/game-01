@@ -22,7 +22,7 @@ export const useCommonStore = defineStore("CommonStore", {
         },
       },
       personColors: {
-        player: "#343434",
+        player: "#464646",
         grace: "#542516",
       },
       centerPoint: { x: null, y: null },

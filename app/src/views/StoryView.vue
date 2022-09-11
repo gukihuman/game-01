@@ -2,7 +2,7 @@
 
 div
 
-  Prologue(v-if='isPrologue' class='absolute top-0')
+  Prologue(v-if='isPrologue' )
   button(@click='mainMenu()' class='absolute top-4 left-4') Main menu
 
 </template>
