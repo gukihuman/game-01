@@ -8,10 +8,11 @@ export const useCommonStore = defineStore("CommonStore", {
       gameFrame: 0,
       window: { w: null, h: null },
       gameWindow: { w: null, h: null },
+      initialDataFethed: false,
       gameData: {
         optionsSet: {
-          outsideBrightness: 25,
-          textSpeed: 25,
+          outsideBrightness: 50,
+          textSpeed: 50,
           textBlur: true,
           textImmediately: false,
         },

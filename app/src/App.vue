@@ -4,11 +4,20 @@ Preload
 
 main(id="main" ref="main" class="h-screen w-screen overflow-hidden flex \
 justify-center items-center" :style='outsideColor')
+
   div(ref='game-window' class='bg-slate-500 relative overflow-hidden')
-    button(@click='toggleFullscreen()' class='absolute top-5 right-5 z-20') Fullscreen
+
+    button(
+      @click='toggleFullscreen()'
+      class='absolute top-5 right-5 z-20'
+    ) Fullscreen
+
     router-view(v-slot='{Component}')
+
       transition(name="fade" mode='out-in')
+
         component(:is="Component")
+
     DevTools
 
 </template>
@@ -67,10 +76,14 @@ export default {
     updateCookie("username");
 
     if (Cookies.get("jwttoken") && Cookies.get("username")) {
-      getGameData().then(() => {
-        console.log("App is mounted. Data fetched.");
-        console.log(cs().gameData);
-      });
+      getGameData()
+        .then(() => {
+          console.log("App is mounted. Data fetched.");
+          console.log(cs().gameData);
+        })
+        .then(() => {
+          cs().initialDataFethed = true;
+        });
     } else {
       console.log("App is mounted with default Data for guest");
       console.log(cs().gameData);

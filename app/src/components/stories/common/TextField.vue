@@ -40,7 +40,8 @@ div
     @click='toggleTextField'
   )
 
-  Text(v-if='isText' :content='text' :color='color')
+  Transition
+    Text(v-if='isText' :content='text' :color='color')
 
 </template>
 
@@ -71,12 +72,27 @@ export default {
       isTextFieldOut: false,
       isStoryButton: false,
       showToggleButton: true,
-      animationSpeed: 1,
+      animationSpeed: 1.15,
       drawFrames: [],
       frameStep: 0,
     };
   },
+  watch: {
+    textFieldStyle() {
+      this.$emit("textFieldStyle", this.textFieldStyle);
+    },
+    isText() {
+      this.$emit("isText", this.isText);
+    },
+  },
   methods: {
+    spaceNextStoryStep(event) {
+      if (event.code == "Space" && this.isStoryButton) {
+        this.nextStoryStep();
+      } else if (event.code == "Space" && this.isTextFieldNone) {
+        this.toggleTextField();
+      }
+    },
     nextStoryStep() {
       cs().gameData.story.step++;
       this.delayedUpdateGameData();
@@ -194,7 +210,25 @@ export default {
     this.delayedUpdateGameData = debounce(() => {
       updateGameData();
       console.log("Data is sent");
-    }, 2000);
+    }, 3000);
+    addEventListener("keypress", this.spaceNextStoryStep);
+    this.$emit("textFieldStyle", this.textFieldStyle);
+    this.$emit("isText", this.isText);
+  },
+  unmounted() {
+    removeEventListener("keypress", this.spaceNextStoryStep);
   },
 };
 </script>
+
+<style>
+/* .v-enter-active, */
+.v-leave-active {
+  transition: all 1s ease-in-out;
+}
+
+/* .v-enter-from, */
+.v-leave-to {
+  opacity: 0;
+}
+</style>
