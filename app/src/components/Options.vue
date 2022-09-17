@@ -82,6 +82,10 @@ export default {
     saveChanges() {
       cs().gameData.optionsSet = this.optionsSet;
       updateGameData();
+      localStorage.setItem(
+        "outside-brightness",
+        this.optionsSet.outsideBrightness
+      );
       console.log("gameData.optionsSet is pushed to the server.");
       console.log(cs().gameData.optionsSet);
       this.toggleOptions();

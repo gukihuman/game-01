@@ -31,7 +31,7 @@ export default {
     },
     buttonAction() {
       cs().gameData.story.step = 0;
-      cs().gameData.story.scene = "forest";
+      cs().gameData.story.scene = "loading";
       this.$router.push("/");
       console.log("Button activated");
     },

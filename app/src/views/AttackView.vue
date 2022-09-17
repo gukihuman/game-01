@@ -16,13 +16,15 @@ Canvas(ref='canvas-wrapper' class='bg-[url("@/assets/common/ground.png")]')
     :prevPointX = 'enemy.prevPointX'
     :status= 'enemy.status'
   )
+  DrawController
 
 
 </template>
 
 <script>
-import Village from "@/components/attack/Village.vue";
 import Canvas from "@/components/Canvas.vue";
+import DrawController from "@/components/attack/DrawController.vue";
+import Village from "@/components/attack/Village.vue";
 import Enemy from "@/components/attack/Enemy.vue";
 import Character from "@/components/attack/Character.vue";
 import { useCommonStore as cs } from "@/stores/CommonStore";
@@ -32,8 +34,9 @@ import { useCharacterStore } from "@/stores/CharacterStore";
 
 export default {
   components: {
-    Village,
     Canvas,
+    DrawController,
+    Village,
     Enemy,
     Character,
   },

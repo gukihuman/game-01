@@ -1,11 +1,16 @@
 <template lang="pug">
 
+//- add to prologue @isDarken=(getDarken)
+
 div(class='relative')
   Transition
     img(
       class='absolute'
       v-if='story.scene == "forest"'
       :src="require('@/assets/stories/prologue/forest/forest.webp')"
+    )
+    Loading(
+      v-else-if='story.scene == "loading"'
     )
     img(
       class='absolute'
@@ -23,43 +28,45 @@ div(class='relative')
       v-if='story.scene == "house"'
       :src="require('@/assets/stories/prologue/house/grace.webp')"
     )
+  
 
-  //- Arrows
-  Transition(:name='arrowsTransition')
-    img(
-      v-if='isText && !thisStep.person'
-      class='absolute'
-      :style='textFieldStyle'
-      :src="require('@/assets/stories/common/arrow-down.webp')"
-    )
-  Transition(:name='arrowsTransition')
-    img(
-      v-if="isText && thisStep.person && !thisStep['arrow-right'] && !thisStep['arrow-left']"
-      class='absolute'
-      :style='textFieldStyle'
-      :src="require('@/assets/stories/common/arrow-up.webp')"
-    )
-  Transition(:name='arrowsTransition')
-    img(
-      v-if="isText && thisStep.person && thisStep['arrow-right']"
-      class='absolute'
-      :style='textFieldStyle'
-      :src="require('@/assets/stories/common/arrow-right.webp')"
-    )
-  Transition(:name='arrowsTransition')
-    img(
-      v-if="isText && thisStep.person && thisStep['arrow-left']"
-      class='absolute'
-      :style='textFieldStyle'
-      :src="require('@/assets/stories/common/arrow-left.webp')"
-    )
+  div(:class="{ 'brightness-90': isDarken }")
+    //- Arrows
+    Transition(:name='arrowsTransition')
+      img(
+        v-if='isText && !thisStep.person'
+        class='absolute'
+        :style='textFieldStyle'
+        :src="require('@/assets/stories/common/arrow-down.webp')"
+      )
+    Transition(:name='arrowsTransition')
+      img(
+        v-if="isText && thisStep.person && !thisStep['arrow-right'] && !thisStep['arrow-left']"
+        class='absolute'
+        :style='textFieldStyle'
+        :src="require('@/assets/stories/common/arrow-up.webp')"
+      )
+    Transition(:name='arrowsTransition')
+      img(
+        v-if="isText && thisStep.person && thisStep['arrow-right']"
+        class='absolute'
+        :style='textFieldStyle'
+        :src="require('@/assets/stories/common/arrow-right.webp')"
+      )
+    Transition(:name='arrowsTransition')
+      img(
+        v-if="isText && thisStep.person && thisStep['arrow-left']"
+        class='absolute'
+        :style='textFieldStyle'
+        :src="require('@/assets/stories/common/arrow-left.webp')"
+      )
 
-  TextField(
-    :text='this.currentText'
-    :color='color'
-    @textFieldStyle='getTextFieldStyle'
-    @isText='getIsText'
-  )
+    TextField(
+      :text='this.currentText'
+      :color='color'
+      @textFieldStyle='getTextFieldStyle'
+      @isText='getIsText'
+    )
 
   button(@click='mainMenu()' class='absolute top-4 left-4') Main menu
 
@@ -67,11 +74,13 @@ div(class='relative')
 
 <script>
 import TextField from "@/components/stories/common/TextField.vue";
+import Loading from "@/components/Loading.vue";
 import { useCommonStore as cs } from "@/stores/CommonStore";
 
 export default {
   components: {
     TextField,
+    Loading,
   },
   watch: {
     initialDataFethed() {
@@ -106,6 +115,9 @@ export default {
     },
   },
   methods: {
+    getDarken(value) {
+      this.isDarken = value;
+    },
     getTextFieldStyle(value) {
       this.textFieldStyle = value;
     },
@@ -119,10 +131,14 @@ export default {
   data() {
     return {
       textFieldStyle: null,
+      isDarken: false,
       isText: null,
       currentText: "",
       sceneId: 0,
-      sceneOrder: ["forest", "village", "house"],
+      sceneOrder: ["loading", "forest", "village", "house"],
+      loading: {
+        steps: [{ person: "grace", text: "" }],
+      },
       forest: {
         steps: [
           {
@@ -186,23 +202,33 @@ export default {
       return cs().gameData.story;
     },
     color() {
-      if (this.sceneId < this.sceneOrder.length) {
-        if (this[this.currentScene].steps[this.step]) {
-          if (this[this.currentScene].steps[this.step].person) {
-            let person = this[this.currentScene].steps[this.step].person;
-            return cs().personColors[person];
-          } else {
-            return cs().personColors.player;
+      if (this.currentScene == "loading") {
+        return cs().personColors.player;
+      } else {
+        if (this.sceneId < this.sceneOrder.length) {
+          if (this[this.currentScene]) {
+            if (this[this.currentScene].steps) {
+              if (this[this.currentScene].steps[this.step]) {
+                if (this[this.currentScene].steps[this.step].person) {
+                  let person = this[this.currentScene].steps[this.step].person;
+                  return cs().personColors[person];
+                } else {
+                  return cs().personColors.player;
+                }
+              } else {
+                return cs().personColors.player;
+              }
+            }
           }
-        } else {
-          return cs().personColors.player;
         }
       }
     },
   },
   mounted() {
     console.log(`Current scene on mount: ${this.currentScene}`);
-    this.currentText = this[this.currentScene].steps[this.step].text;
+    if (this.currentScene.steps) {
+      this.currentText = this[this.currentScene].steps[this.step].text;
+    }
     if (cs().initialDataFethed == true) {
       this.sceneId = this.sceneOrder.findIndex(
         (item) => cs().gameData.story.scene == item

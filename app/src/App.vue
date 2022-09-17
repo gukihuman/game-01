@@ -1,39 +1,46 @@
 <template lang="pug">
 
-Preload
 
-main(id="main" ref="main" class="h-screen w-screen overflow-hidden flex \
-justify-center items-center" :style='outsideColor')
+div(:style='mainStyle')
+  Preload
+  main(id="main" ref="main" class="h-screen w-screen overflow-hidden flex \
+  justify-center items-center" :style='outsideColor')
 
-  div(ref='game-window' class='bg-slate-500 relative overflow-hidden')
+    div(ref='game-window' class='bg-slate-500 relative overflow-hidden'
+    )
 
-    button(
-      @click='toggleFullscreen()'
-      class='absolute top-5 right-5 z-20'
-    ) Fullscreen
+      button(
+        @click='toggleFullscreen()'
+        class='absolute top-5 right-5 z-20'
+      ) Fullscreen
 
-    router-view(v-slot='{Component}')
+      router-view(v-slot='{Component}')
 
-      transition(name="fade" mode='out-in')
+        transition(:name="transitionOnStart" mode='out-in')
 
-        component(:is="Component")
+          component(:is="Component")
 
-    DevTools
+      DevTools
 
 </template>
 
 <script>
 import Preload from "@/components/Preload.vue";
 import DevTools from "@/components/DevTools.vue";
-import { updateCookie } from "@/js/common";
-import { useCommonStore as cs } from "@/stores/CommonStore";
-import { getGameData } from "@/js/common";
 import Cookies from "js-cookie";
+import { updateCookie } from "@/js/common";
+import { getGameData } from "@/js/common";
+import { generateCoordinates } from "@/js/common";
+import { showLocalStorageSize } from "@/js/common";
+import { useCommonStore as cs } from "@/stores/CommonStore";
 
 export default {
   components: {
     Preload,
     DevTools,
+  },
+  data() {
+    return {};
   },
   methods: {
     toggleFullscreen() {
@@ -60,6 +67,20 @@ export default {
     },
   },
   computed: {
+    transitionOnStart() {
+      if (cs().loadingMounted) {
+        return "fade";
+      } else {
+        return "none";
+      }
+    },
+    mainStyle() {
+      if (cs().loadingMounted) {
+        return { display: "block" };
+      } else {
+        return { display: "hidden" };
+      }
+    },
     outsideColor() {
       let brightness = "0.5";
       if (cs().gameData.optionsSet) {
@@ -89,6 +110,19 @@ export default {
       console.log(cs().gameData);
     }
 
+    // localStorage
+    if (localStorage.getItem("outside-brightness")) {
+      cs().gameData.optionsSet.outsideBrightness =
+        localStorage.getItem("outside-brightness");
+    }
+    if (!localStorage.getItem("coordinates")) {
+      localStorage.setItem(
+        "coordinates",
+        JSON.stringify(generateCoordinates())
+      );
+    }
+    showLocalStorageSize();
+
     cs().window.w = window.innerWidth;
     cs().window.h = window.innerHeight;
 
@@ -113,6 +147,16 @@ export default {
 
 .fade-enter-from,
 .fade-leave-to {
+  opacity: 0;
+}
+
+.none-enter-active,
+.none-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.none-enter-from,
+.none-leave-to {
   opacity: 0;
 }
 </style>

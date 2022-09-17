@@ -165,6 +165,13 @@ export default {
     logout() {
       Cookies.remove("jwttoken");
       Cookies.remove("username");
+      Cookies.remove("outside-brightness");
+      localStorage.removeItem("loading-background");
+      localStorage.removeItem("loading-ring-1");
+      localStorage.removeItem("loading-ring-2");
+      localStorage.removeItem("loading-ring-3");
+      localStorage.removeItem("loading-ring-4");
+      localStorage.removeItem("coordinates");
       this.logged = false;
     },
   },

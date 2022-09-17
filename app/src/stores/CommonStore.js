@@ -8,7 +8,13 @@ export const useCommonStore = defineStore("CommonStore", {
       gameFrame: 0,
       window: { w: null, h: null },
       gameWindow: { w: null, h: null },
-      initialDataFethed: false,
+      initialDataFetched: false,
+      loadingMounted: false,
+      personColors: {
+        player: "#464646",
+        grace: "#542516",
+      },
+      centerPoint: { x: null, y: null },
       gameData: {
         optionsSet: {
           outsideBrightness: 50,
@@ -18,15 +24,10 @@ export const useCommonStore = defineStore("CommonStore", {
         },
         story: {
           stage: "prologue",
-          scene: "forest",
+          scene: "loading",
           step: "0",
         },
       },
-      personColors: {
-        player: "#464646",
-        grace: "#542516",
-      },
-      centerPoint: { x: null, y: null },
     };
   },
   getters: {
