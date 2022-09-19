@@ -3,26 +3,15 @@
 div
   canvas(ref="canvas")
     slot
-  Transition
-    Loading(
-      v-if='isLoading'
-      class="absolute top-0 left-0 w-screen h-screen"
-    )
 
 </template>
 
 <script>
-import { useCommonStore } from "@/stores/CommonStore";
-import { debounce } from "@/js/common";
-import Loading from "@/components/Loading";
+import { useCommonStore as cs } from "@/stores/CommonStore";
 
 export default {
-  components: {
-    Loading,
-  },
   data() {
     return {
-      isLoading: false,
       provider: {
         context: null,
       },
@@ -33,18 +22,24 @@ export default {
       provider: this.provider,
     };
   },
+  methods: {
+    clear() {
+      this.provider.context.clearRect(
+        0,
+        0,
+        cs().gameWindow.w,
+        cs().gameWindow.h
+      );
+    },
+  },
   mounted() {
     this.provider.context = this.$refs.canvas.getContext("2d");
-    this.$refs.canvas.width = useCommonStore().gameWindow.w;
-    this.$refs.canvas.height = useCommonStore().gameWindow.h;
-
-    this.delayedLoadingHide = debounce(() => (this.isLoading = false), 300);
+    this.$refs.canvas.width = cs().gameWindow.w;
+    this.$refs.canvas.height = cs().gameWindow.h;
 
     window.addEventListener("resize", () => {
-      this.$refs.canvas.width = useCommonStore().gameWindow.w;
-      this.$refs.canvas.height = useCommonStore().gameWindow.h;
-      this.delayedLoadingHide();
-      this.isLoading = true;
+      this.$refs.canvas.width = cs().gameWindow.w;
+      this.$refs.canvas.height = cs().gameWindow.h;
     });
   },
 };

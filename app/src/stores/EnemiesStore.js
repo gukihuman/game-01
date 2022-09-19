@@ -52,8 +52,8 @@ export const useEnemiesStore = defineStore("EnemiesStore", {
       const { pointX, pointY } = this._generateRandomSidePosition();
 
       // dev generation
-      // const pointX = useCommonStore().centerPoint.x;
-      // const pointY = useCommonStore().canvas.height;
+      // const pointX = cs().centerPoint.x;
+      // const pointY = cs().gameWindow.h;
 
       const distance = getTriangle(pointX, pointY);
       const speed = this.enemySpeed;

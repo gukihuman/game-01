@@ -1,26 +1,25 @@
 <template lang="pug">
 
 
-div(:style='mainStyle')
-  Preload
-  main(id="main" ref="main" class="h-screen w-screen overflow-hidden flex \
-  justify-center items-center" :style='outsideColor')
+Preload
+main(id="main" ref="main" class="h-screen w-screen overflow-hidden flex \
+justify-center items-center" :style='outsideColor')
 
-    div(ref='game-window' class='bg-slate-500 relative overflow-hidden'
-    )
+  div(ref='game-window' class='bg-slate-500 relative overflow-hidden'
+  )
 
-      button(
-        @click='toggleFullscreen()'
-        class='absolute top-5 right-5 z-20'
-      ) Fullscreen
+    button(
+      @click='toggleFullscreen()'
+      class='absolute top-5 right-5 z-20'
+    ) Fullscreen
 
-      router-view(v-slot='{Component}')
+    router-view(v-slot='{Component}')
 
-        transition(:name="transitionOnStart" mode='out-in')
+      transition(:name="transitionOnStart" mode='out-in')
 
-          component(:is="Component")
+        component(:is="Component")
 
-      DevTools
+    DevTools
 
 </template>
 
@@ -68,17 +67,10 @@ export default {
   },
   computed: {
     transitionOnStart() {
-      if (cs().loadingMounted) {
+      if (cs().loadingDone) {
         return "fade";
       } else {
         return "none";
-      }
-    },
-    mainStyle() {
-      if (cs().loadingMounted) {
-        return { display: "block" };
-      } else {
-        return { display: "hidden" };
       }
     },
     outsideColor() {
@@ -97,31 +89,31 @@ export default {
     updateCookie("username");
 
     if (Cookies.get("jwttoken") && Cookies.get("username")) {
+      // localStorage
+      if (localStorage.getItem("outside-brightness")) {
+        cs().gameData.optionsSet.outsideBrightness =
+          localStorage.getItem("outside-brightness");
+      }
+      if (!localStorage.getItem("coordinates")) {
+        localStorage.setItem(
+          "coordinates",
+          JSON.stringify(generateCoordinates())
+        );
+      }
+      showLocalStorageSize();
+
       getGameData()
         .then(() => {
           console.log("App is mounted. Data fetched.");
           console.log(cs().gameData);
         })
         .then(() => {
-          cs().initialDataFethed = true;
+          cs().initialDataFetched = true;
         });
     } else {
       console.log("App is mounted with default Data for guest");
       console.log(cs().gameData);
     }
-
-    // localStorage
-    if (localStorage.getItem("outside-brightness")) {
-      cs().gameData.optionsSet.outsideBrightness =
-        localStorage.getItem("outside-brightness");
-    }
-    if (!localStorage.getItem("coordinates")) {
-      localStorage.setItem(
-        "coordinates",
-        JSON.stringify(generateCoordinates())
-      );
-    }
-    showLocalStorageSize();
 
     cs().window.w = window.innerWidth;
     cs().window.h = window.innerHeight;

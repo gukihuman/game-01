@@ -9,7 +9,7 @@ export const useCommonStore = defineStore("CommonStore", {
       window: { w: null, h: null },
       gameWindow: { w: null, h: null },
       initialDataFetched: false,
-      loadingMounted: false,
+      loadingDone: false,
       personColors: {
         player: "#464646",
         grace: "#542516",
@@ -32,6 +32,7 @@ export const useCommonStore = defineStore("CommonStore", {
   },
   getters: {
     gameWindowRatio: (state) => (state.gameWindow.h / 1080).toFixed(2),
+    gameWindowRatio2k: (state) => (state.gameWindow.h / 1440).toFixed(2),
   },
   actions: {
     startGameFrame() {

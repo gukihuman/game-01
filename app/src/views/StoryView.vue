@@ -83,7 +83,7 @@ export default {
     Loading,
   },
   watch: {
-    initialDataFethed() {
+    initialDataFetched() {
       this.sceneId = this.sceneOrder.findIndex(
         (item) => cs().gameData.story.scene == item
       );
@@ -189,8 +189,8 @@ export default {
     thisStep() {
       return this[this.currentScene].steps[this.step];
     },
-    initialDataFethed() {
-      return cs().initialDataFethed;
+    initialDataFetched() {
+      return cs().initialDataFetched;
     },
     currentScene() {
       return cs().gameData.story.scene;
@@ -229,7 +229,7 @@ export default {
     if (this.currentScene.steps) {
       this.currentText = this[this.currentScene].steps[this.step].text;
     }
-    if (cs().initialDataFethed == true) {
+    if (cs().initialDataFetched == true) {
       this.sceneId = this.sceneOrder.findIndex(
         (item) => cs().gameData.story.scene == item
       );

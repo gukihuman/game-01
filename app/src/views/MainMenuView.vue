@@ -15,7 +15,7 @@ div
 <script>
 import Enter from "@/components/Enter.vue";
 import Options from "@/components/Options.vue";
-import { useCommonStore } from "@/stores/CommonStore";
+import { useCommonStore as cs } from "@/stores/CommonStore";
 
 export default {
   components: {
@@ -29,7 +29,7 @@ export default {
   },
   computed: {
     logged() {
-      return useCommonStore().logged;
+      return cs().logged;
     },
   },
   methods: {

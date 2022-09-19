@@ -6,24 +6,22 @@ div
     :src ='"data:image/png;base64," + this.loadingBackground'
   )
   img(
-    class='absolute'
+    class='absolute animate-spin-100'
     :src ='"data:image/png;base64," + this.loadingRing1'
-    :style='spinStyle1'
+    style='animation-direction: reverse'
   )
   img(
-    class='absolute'
+    class='absolute animate-spin-70'
     :src ='"data:image/png;base64," + this.loadingRing2'
-    :style='spinStyle2'
   )
   img(
-    class='absolute'
+    class='absolute animate-spin-30'
     :src ='"data:image/png;base64," + this.loadingRing3'
-    :style='spinStyle3'
+    style='animation-direction: reverse'
   )
   img(
-    class='absolute'
+    class='absolute animate-spin-10'
     :src ='"data:image/png;base64," + this.loadingRing4'
-    :style='spinStyle4'
   )
 
 </template>
@@ -41,39 +39,8 @@ export default {
       loadingRing4: localStorage.getItem("loading-ring-4"),
     };
   },
-  computed: {
-    spinStyle1() {
-      return { animation: "spin 100s linear infinite" };
-    },
-    spinStyle2() {
-      return {
-        animation: "spin 70s linear infinite",
-        "animation-direction": "reverse",
-      };
-    },
-    spinStyle3() {
-      return { animation: "spin 30s linear infinite" };
-    },
-    spinStyle4() {
-      return {
-        animation: "spin 10s linear infinite",
-        "animation-direction": "reverse",
-      };
-    },
-  },
   mounted() {
-    cs().loadingMounted = true;
+    cs().loadingDone = true;
   },
 };
 </script>
-
-<style>
-@keyframes spin {
-  from {
-    transform: rotate (0deg);
-  }
-  to {
-    transform: rotate (360deg);
-  }
-}
-</style>

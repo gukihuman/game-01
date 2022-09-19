@@ -154,6 +154,10 @@ export default {
         Cookies.set("username", this.username, { expires: 7 });
         Cookies.set("jwttoken", res.data.jwttoken, { expires: 7 });
 
+        localStorage.setItem(
+          "coordinates",
+          JSON.stringify(generateCoordinates())
+        );
         getGameData();
         console.log("Login successful! gameData is fetched.");
       } else {
@@ -173,6 +177,7 @@ export default {
       localStorage.removeItem("loading-ring-4");
       localStorage.removeItem("coordinates");
       this.logged = false;
+      this.$router.push("/");
     },
   },
   mounted() {

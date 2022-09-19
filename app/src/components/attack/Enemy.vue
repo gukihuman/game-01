@@ -6,9 +6,6 @@ import spriteMove from "@/assets/animation/goblin-move.json";
 export default {
   inject: ["provider"],
   props: ["pointX", "pointY", "status", "prevPointX"],
-  data() {
-    return {};
-  },
   render() {
     if (!this.provider.context) return;
 

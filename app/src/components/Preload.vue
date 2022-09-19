@@ -18,7 +18,7 @@ const png = ".png";
 const webp = ".webp";
 const pngFiles = {
   animation: ["character-move", "character-idle", "goblin-bj", "goblin-bj-cum"],
-  common: ["village", "ground"],
+  "attack/common": ["village", "ground"],
 };
 const webpFiles = {
   "stories/common": [

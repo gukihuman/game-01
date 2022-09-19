@@ -1,6 +1,23 @@
 import { useCommonStore as cs } from "@/stores/CommonStore";
+import { useAttackStore as as } from "@/stores/AttackStore";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { assert } from "@vue/compiler-core";
+
+export function getFrameIndex(startGameFrame, currentGameFrame, frameAmount) {
+  let startFrameOffset = startGameFrame % (60 / frameAmount);
+  let roundedStartGameFrame = startGameFrame - startFrameOffset;
+  let roundedGameFrame = currentGameFrame - startFrameOffset;
+  let startFrame =
+    Math.floor(roundedStartGameFrame / (60 / frameAmount)) % frameAmount;
+  let currentFrame =
+    Math.floor(roundedGameFrame / (60 / frameAmount)) % frameAmount;
+  currentFrame -= startFrame;
+  if (currentFrame < 0) {
+    currentFrame += frameAmount;
+  }
+  return currentFrame;
+}
 
 export function generateCoordinates() {
   const steps = [];
@@ -9,39 +26,29 @@ export function generateCoordinates() {
   // not pixels but steps
   const widthSteps = 1280;
   const heightSteps = 720;
-  const diagonalSteps = 1468;
-  for (let i = 0; i < 16; i++) {
+  for (let i = 0; i < 17; i++) {
     stepsIds.push({ idX: i, idY: 0 });
   }
-  for (let i = 1; i < 9; i++) {
+  for (let i = 1; i < 10; i++) {
     stepsIds.push({ idX: 0, idY: i });
   }
-  for (let i = 0; i < 24; i++) {
+  for (let i = 0; i < 26; i++) {
     const lineSteps = [];
     const startX = (stepsIds[i].idX * widthSteps) / 16;
     const startY = (stepsIds[i].idY * heightSteps) / 9;
     const width = widthSteps - startX;
     const height = heightSteps - startY;
-    for (let j = 0; j < diagonalSteps; j++) {
+    const diagonalSteps = Math.floor(Math.sqrt(width ** 2 + height ** 2));
+    for (let j = 0; j < diagonalSteps - as().villageRadius; j++) {
       let x = Math.floor(startX + (width / diagonalSteps) * j);
       let y = Math.floor(startY + (height / diagonalSteps) * j);
       lineSteps.push({ x: x, y: y });
     }
     steps.push(lineSteps);
   }
-  for (let i = 0; i < 24; i++) {
+  for (let i = 0; i < 25; i++) {
     const lineSteps = [];
-    for (let j = 0; j < diagonalSteps; j++) {
-      lineSteps.push({
-        x: 2 * widthSteps - steps[i][j].x,
-        y: steps[i][j].y,
-      });
-    }
-    steps.push(lineSteps);
-  }
-  for (let i = 0; i < 48; i++) {
-    const lineSteps = [];
-    for (let j = 0; j < diagonalSteps; j++) {
+    for (let j = 0; j < steps[i].length; j++) {
       lineSteps.push({
         x: steps[i][j].x,
         y: 2 * heightSteps - steps[i][j].y,
@@ -49,7 +56,20 @@ export function generateCoordinates() {
     }
     steps.push(lineSteps);
   }
+  for (let i = 0; i < 51; i++) {
+    if (i != 16 && i != 42) {
+      const lineSteps = [];
+      for (let j = 0; j < steps[i].length; j++) {
+        lineSteps.push({
+          x: 2 * widthSteps - steps[i][j].x,
+          y: steps[i][j].y,
+        });
+      }
+      steps.push(lineSteps);
+    }
+  }
 
+  console.log(steps);
   return steps;
 }
 

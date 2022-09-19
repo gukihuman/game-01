@@ -100,7 +100,7 @@ export default {
     },
     nextFrameStep() {
       if (!this.$refs["canvas"]) return;
-      this.$refs["canvas"].provider.context.clearRect(0, 0, 6000, 6000);
+      this.$refs["canvas"].clear();
       this.frameStep++;
     },
     _timeoutButton() {
