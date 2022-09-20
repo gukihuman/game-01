@@ -4,6 +4,8 @@ import { useAttackStore as as } from "@/stores/AttackStore";
 import { updateGameData } from "@/js/common";
 import { getFrameIndex } from "@/js/common";
 import goblinMoveJson from "@/assets/attack/goblin/move.json";
+import aliceMoveJson from "@/assets/attack/alice/move.json";
+import aliceIdleJson from "@/assets/attack/alice/idle.json";
 
 export default {
   inject: ["provider"],
@@ -16,13 +18,17 @@ export default {
     "status",
     "direction",
     "prevPointX",
-    "id",
   ],
   data() {
     return {
       goblin: {
         ratio: 0.5,
         move: goblinMoveJson,
+      },
+      alice: {
+        ratio: 0.5,
+        idle: aliceIdleJson,
+        move: aliceMoveJson,
       },
     };
   },
@@ -32,9 +38,7 @@ export default {
     const c = this.provider.context;
 
     const image = new Image();
-    if (this.type == "enemy" && this.status != "sex") {
-      image.src = require("@/assets/animation/goblin-move.png");
-    }
+    image.src = require(`@/assets/attack/${this.name}/${this.status}.png`);
 
     let json = this[this.name][this.status].frames;
     let currentFrame = getFrameIndex(

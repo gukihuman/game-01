@@ -1,7 +1,7 @@
 <script>
 import { useEnemiesStore } from "@/stores/EnemiesStore";
 import { useCommonStore } from "@/stores/CommonStore";
-import spriteMove from "@/assets/animation/goblin-move.json";
+// import spriteMove from "@/assets/animation/goblin-move.json";
 
 export default {
   inject: ["provider"],
@@ -17,7 +17,7 @@ export default {
     let sprite = null;
 
     if (this.status === "move") {
-      image.src = require("@/assets/animation/goblin-move.png");
+      // image.src = require("@/assets/animation/goblin-move.png");
       sprite = spriteMove;
       width = sprite.frames[0].sourceSize.w * 0.2;
       height = sprite.frames[0].sourceSize.h * 0.2;

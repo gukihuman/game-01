@@ -4,7 +4,10 @@ import { useCommonStore as cs } from "@/stores/CommonStore";
 export const useAttackStore = defineStore("AttackStore", {
   state: () => {
     return {
-      coordinates: JSON.parse(localStorage.getItem("coordinates")),
+      enemyCoordinates: JSON.parse(localStorage.getItem("enemy-coordinates")),
+      characterCoordinates: JSON.parse(
+        localStorage.getItem("character-coordinates")
+      ),
       freeId: 0,
       villageRadius: 340,
       drawObjects: [],
@@ -27,13 +30,26 @@ export const useAttackStore = defineStore("AttackStore", {
         path: path,
         pathEnded: false,
         lifetime: 1,
-        direction: "left",
+        direction: "right",
         prevPointX: 0,
         pointX: 0,
         pointY: 0,
         status: "move",
       });
       this.freeId++;
+    },
+    generateCharacter(name) {
+      this.drawObjects.push({
+        startGameFrame: cs().gameFrame,
+        type: "character",
+        name: name,
+        direction: "right",
+        position: 0,
+        prevPointX: 0,
+        pointX: 23,
+        pointY: 33,
+        status: "idle",
+      });
     },
   },
 });

@@ -155,8 +155,8 @@ export default {
         Cookies.set("jwttoken", res.data.jwttoken, { expires: 7 });
 
         localStorage.setItem(
-          "coordinates",
-          JSON.stringify(generateCoordinates())
+          "enemy-coordinates",
+          JSON.stringify(generateEnemyCoordinates())
         );
         getGameData();
         console.log("Login successful! gameData is fetched.");
@@ -175,7 +175,7 @@ export default {
       localStorage.removeItem("loading-ring-2");
       localStorage.removeItem("loading-ring-3");
       localStorage.removeItem("loading-ring-4");
-      localStorage.removeItem("coordinates");
+      localStorage.removeItem("enemy-coordinates");
       this.logged = false;
       this.$router.push("/");
     },

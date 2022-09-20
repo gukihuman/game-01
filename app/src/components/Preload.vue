@@ -17,8 +17,9 @@ import { loadingRing4 } from "@/assets/common/loading/base64";
 const png = ".png";
 const webp = ".webp";
 const pngFiles = {
-  animation: ["character-move", "character-idle", "goblin-bj", "goblin-bj-cum"],
+  "attack/alice": ["move", "idle", "goblin-bj", "goblin-bj-cum"],
   "attack/common": ["village", "ground"],
+  "attack/goblin": ["move"],
 };
 const webpFiles = {
   "stories/common": [

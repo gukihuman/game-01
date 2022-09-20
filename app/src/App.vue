@@ -29,7 +29,9 @@ import DevTools from "@/components/DevTools.vue";
 import Cookies from "js-cookie";
 import { updateCookie } from "@/js/common";
 import { getGameData } from "@/js/common";
-import { generateCoordinates } from "@/js/common";
+import { generateEnemyCoordinates } from "@/js/common";
+import { generateCharacterCoordinates } from "@/js/common";
+import { enemyCharacterRelation } from "@/js/common";
 import { showLocalStorageSize } from "@/js/common";
 import { useCommonStore as cs } from "@/stores/CommonStore";
 
@@ -94,10 +96,22 @@ export default {
         cs().gameData.optionsSet.outsideBrightness =
           localStorage.getItem("outside-brightness");
       }
-      if (!localStorage.getItem("coordinates")) {
+      if (!localStorage.getItem("enemy-coordinates")) {
         localStorage.setItem(
-          "coordinates",
-          JSON.stringify(generateCoordinates())
+          "enemy-coordinates",
+          JSON.stringify(generateEnemyCoordinates())
+        );
+      }
+      if (!localStorage.getItem("character-coordinates")) {
+        localStorage.setItem(
+          "character-coordinates",
+          JSON.stringify(generateCharacterCoordinates())
+        );
+      }
+      if (!localStorage.getItem("enemy-character-relation")) {
+        localStorage.setItem(
+          "enemy-character-relation",
+          JSON.stringify(enemyCharacterRelation())
         );
       }
       showLocalStorageSize();

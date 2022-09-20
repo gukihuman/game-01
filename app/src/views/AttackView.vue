@@ -4,7 +4,6 @@ div
 
   Field
   Canvas(ref='canvas' class='absolute')
-    Character
     DrawController(
       v-for='(object, index) in drawObjects'
       :key='index'
@@ -66,22 +65,33 @@ export default {
   methods: {
     moveCycle() {
       as().drawObjects.forEach((object) => {
-        let pathStep = Math.floor(object.lifetime * object.speed);
-        object.pathEnded = as().coordinates[object.path].length - 1 < pathStep;
+        if (object.type == "enemy") {
+          let pathStep = Math.floor(object.lifetime * object.speed);
+          object.pathEnded =
+            as().enemyCoordinates[object.path].length - 1 < pathStep;
 
-        if (object.type == "enemy" && !object.pathEnded) {
-          object.pointX = as().coordinates[object.path][pathStep].x;
-          object.pointY = as().coordinates[object.path][pathStep].y;
-          object.prevPointX = as().coordinates[object.path][pathStep - 1].x;
+          if (object.type == "enemy" && !object.pathEnded) {
+            object.pointX = as().enemyCoordinates[object.path][pathStep].x;
+            object.pointY = as().enemyCoordinates[object.path][pathStep].y;
+            object.prevPointX =
+              as().enemyCoordinates[object.path][pathStep - 1].x;
 
-          if (object.prevPointX > object.pointX) {
-            object.direction = "left";
-          } else if (object.prevPointX < object.pointX) {
-            object.direction = "right";
+            if (object.prevPointX > object.pointX) {
+              object.direction = "left";
+            } else if (object.prevPointX < object.pointX) {
+              object.direction = "right";
+            }
           }
+          object.lifetime++;
         }
-
-        object.lifetime++;
+        if (object.type == "character") {
+          object.pointX = as().characterCoordinates[object.position].x;
+          object.pointY = as().characterCoordinates[object.position].y;
+          if (object.position == 360 * 4 - 1) {
+            object.position = 0;
+          }
+          object.position++;
+        }
       });
     },
     sortByY() {
@@ -99,32 +109,21 @@ export default {
     gameFrame(value) {
       if (value % 300 == 0 && value < 1300) {
         as().generateEnemy("goblin");
-        console.log("generateEnemy");
       }
 
       this.moveCycle();
       this.sortByY();
 
-      // old
-
-      // if (
-      //   useCharacterStore().status === "idle" ||
-      //   useCharacterStore().status === "move"
-      // ) {
-      //   useCharacterStore().move();
-      // }
-
       this.$refs.canvas.clear();
     },
   },
   mounted() {
+    as().generateCharacter("alice");
     this.center.pointX = this.$el.clientWidth / 2;
     this.center.pointY = this.$el.clientHeight / 2;
 
     cs().centerPoint.x = cs().gameWindow.w / 2;
     cs().centerPoint.y = cs().gameWindow.h / 2;
-
-    //main draw loop
   },
 };
 </script>

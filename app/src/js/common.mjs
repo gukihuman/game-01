@@ -2,7 +2,6 @@ import { useCommonStore as cs } from "@/stores/CommonStore";
 import { useAttackStore as as } from "@/stores/AttackStore";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { assert } from "@vue/compiler-core";
 
 export function getFrameIndex(startGameFrame, currentGameFrame, frameAmount) {
   let startFrameOffset = startGameFrame % (60 / frameAmount);
@@ -19,7 +18,61 @@ export function getFrameIndex(startGameFrame, currentGameFrame, frameAmount) {
   return currentFrame;
 }
 
-export function generateCoordinates() {
+export function enemyCharacterRelation() {
+  let enemyPathEnds = [];
+  as().enemyCoordinates.forEach((pathLine) => {
+    enemyPathEnds.push(pathLine[pathLine.length - 1]);
+  });
+
+  let relation = [];
+  enemyPathEnds.forEach((enemyPosition) => {
+    let closestY = Infinity;
+    let bestResultsY = []; // indexes of character coordinates
+    as().characterCoordinates.forEach((characterPosition, index) => {
+      let currentDifference = Math.abs(enemyPosition.y - characterPosition.y);
+      if (currentDifference < closestY) {
+        closestY = currentDifference;
+        bestResultsY = [];
+        bestResultsY.push(index);
+      } else if (currentDifference == closestY) {
+        bestResultsY.push(index);
+      }
+    });
+    let closestX = Infinity;
+    let bestResultXandY;
+    bestResultsY.forEach((resultY) => {
+      let currentDifference = Math.abs(
+        enemyPosition.x - as().characterCoordinates[resultY].x
+      );
+      if (currentDifference < closestX) {
+        closestX = currentDifference;
+        bestResultXandY = resultY;
+      }
+    });
+    relation.push(bestResultXandY);
+  });
+
+  return relation;
+}
+
+export function generateCharacterCoordinates() {
+  const steps = [];
+  const centerPoint = { x: 1280, y: 720 };
+  for (let i = 360 * 4 - 1; i >= 0; i--) {
+    steps.push({
+      x: Math.floor(
+        centerPoint.x - Math.sin(((i / 4) * Math.PI) / 180) * as().villageRadius
+      ),
+      y: Math.floor(
+        centerPoint.y - Math.cos(((i / 4) * Math.PI) / 180) * as().villageRadius
+      ),
+    });
+  }
+
+  return steps;
+}
+
+export function generateEnemyCoordinates() {
   const steps = [];
   const stepsIds = [];
 
@@ -40,8 +93,8 @@ export function generateCoordinates() {
     const height = heightSteps - startY;
     const diagonalSteps = Math.floor(Math.sqrt(width ** 2 + height ** 2));
     for (let j = 0; j < diagonalSteps - as().villageRadius; j++) {
-      let x = Math.floor(startX + (width / diagonalSteps) * j);
-      let y = Math.floor(startY + (height / diagonalSteps) * j);
+      const x = Math.floor(startX + (width / diagonalSteps) * j);
+      const y = Math.floor(startY + (height / diagonalSteps) * j);
       lineSteps.push({ x: x, y: y });
     }
     steps.push(lineSteps);
@@ -69,7 +122,6 @@ export function generateCoordinates() {
     }
   }
 
-  console.log(steps);
   return steps;
 }
 

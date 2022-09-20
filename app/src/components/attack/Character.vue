@@ -1,10 +1,10 @@
 <script>
-import spriteIdle from "@/assets/animation/character-idle.json";
-import spriteMove from "@/assets/animation/character-move.json";
-import spriteGoblin from "@/assets/animation/goblin-bj.json";
-import { useCharacterStore } from "@/stores/CharacterStore";
-import { useCommonStore } from "@/stores/CommonStore";
-import { useVillageStore } from "@/stores/VillageStore";
+// import spriteIdle from "@/assets/animation/character-idle.json";
+// import spriteMove from "@/assets/animation/character-move.json";
+// import spriteGoblin from "@/assets/animation/goblin-bj.json";
+// import { useCharacterStore } from "@/stores/CharacterStore";
+// import { useCommonStore } from "@/stores/CommonStore";
+// import { useVillageStore } from "@/stores/VillageStore";
 
 export default {
   inject: ["provider"],
@@ -15,16 +15,16 @@ export default {
     const image = new Image();
     let sprite = null;
 
-    if (useCharacterStore().status === "move") {
-      image.src = require("@/assets/animation/character-move.png");
-      sprite = spriteMove;
-    } else if (useCharacterStore().status === "fight") {
-      image.src = require("@/assets/animation/goblin-bj.png");
-      sprite = spriteGoblin;
-    } else {
-      image.src = require("@/assets/animation/character-idle.png");
-      sprite = spriteIdle;
-    }
+    // if (useCharacterStore().status === "move") {
+    //   image.src = require("@/assets/animation/character-move.png");
+    //   sprite = spriteMove;
+    // } else if (useCharacterStore().status === "fight") {
+    //   image.src = require("@/assets/animation/goblin-bj.png");
+    //   sprite = spriteGoblin;
+    // } else {
+    //   image.src = require("@/assets/animation/character-idle.png");
+    //   sprite = spriteIdle;
+    // }
 
     const width = sprite.frames[0].sourceSize.w * 0.2;
     const height = sprite.frames[0].sourceSize.h * 0.2;
