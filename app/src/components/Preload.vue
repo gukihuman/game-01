@@ -16,12 +16,11 @@ import { loadingRing4 } from "@/assets/common/loading/base64";
 
 const png = ".png";
 const webp = ".webp";
-const pngFiles = {
+const pngFiles = {};
+const webpFiles = {
   "attack/alice": ["move", "idle", "goblin-bj", "goblin-bj-cum"],
   "attack/common": ["village", "ground"],
-  "attack/goblin": ["move"],
-};
-const webpFiles = {
+  "attack/goblin": ["move", "in"],
   "stories/common": [
     "text-field-out",
     "text-field-in",

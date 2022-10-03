@@ -15,6 +15,7 @@ div
       :pointX='object.pointX'
       :pointY='object.pointY'
       :status='object.status'
+      :lifeTime='object.lifeTime'
     )
 
 
@@ -24,23 +25,15 @@ div
 import Canvas from "@/components/Canvas.vue";
 import DrawController from "@/components/attack/DrawController.vue";
 import Field from "@/components/attack/Field.vue";
-import Village from "@/components/attack/Village.vue";
-import Enemy from "@/components/attack/Enemy.vue";
-import Character from "@/components/attack/Character.vue";
 import { useCommonStore as cs } from "@/stores/CommonStore";
 import { useAttackStore as as } from "@/stores/AttackStore";
-import { useVillageStore } from "@/stores/VillageStore";
 import { useEnemiesStore } from "@/stores/EnemiesStore";
-import { useCharacterStore } from "@/stores/CharacterStore";
 
 export default {
   components: {
     Canvas,
     DrawController,
     Field,
-    Village,
-    Enemy,
-    Character,
   },
   data() {
     return {
@@ -63,27 +56,44 @@ export default {
     },
   },
   methods: {
+    deathCheck() {
+      as().drawObjects.forEach((object, index, array) => {
+        if (object.deathTime <= object.lifeTime) {
+          array.splice(index, 1);
+        }
+      });
+    },
     moveCycle() {
       as().drawObjects.forEach((object) => {
+        object.lifeTime++;
+
+        // enemy
         if (object.type == "enemy") {
-          let pathStep = Math.floor(object.lifetime * object.speed);
+          let currentStep = Math.floor(object.lifeTime * object.speed);
           object.pathEnded =
-            as().enemyCoordinates[object.path].length - 1 < pathStep;
+            as().enemyCoordinates[object.path].length - 1 < currentStep;
 
           if (object.type == "enemy" && !object.pathEnded) {
-            object.pointX = as().enemyCoordinates[object.path][pathStep].x;
-            object.pointY = as().enemyCoordinates[object.path][pathStep].y;
+            object.pointX = as().enemyCoordinates[object.path][currentStep].x;
+            object.pointY = as().enemyCoordinates[object.path][currentStep].y;
             object.prevPointX =
-              as().enemyCoordinates[object.path][pathStep - 1].x;
+              as().enemyCoordinates[object.path][currentStep - 1].x;
 
             if (object.prevPointX > object.pointX) {
               object.direction = "left";
             } else if (object.prevPointX < object.pointX) {
               object.direction = "right";
             }
+          } else {
+            if (object.status != "in") {
+              object.startGameFrame = cs().gameFrame;
+              object.status = "in";
+              object.deathTime = object.lifeTime + 119;
+            }
           }
-          object.lifetime++;
         }
+
+        // character
         if (object.type == "character") {
           object.pointX = as().characterCoordinates[object.position].x;
           object.pointY = as().characterCoordinates[object.position].y;
@@ -95,22 +105,15 @@ export default {
       });
     },
     sortByY() {
-      as().drawObjects.sort((a, b) => {
-        if (a.pointY < b.pointY) {
-          return -1;
-        } else if (a.pointY > b.pointY) {
-          return 1;
-        }
-        return 0;
-      });
+      as().drawObjects.sort((a, b) => a.pointY - b.pointY);
     },
   },
   watch: {
     gameFrame(value) {
-      if (value % 300 == 0 && value < 1300) {
+      if (value % 200 == 0) {
         as().generateEnemy("goblin");
       }
-
+      this.deathCheck();
       this.moveCycle();
       this.sortByY();
 

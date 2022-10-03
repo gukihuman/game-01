@@ -1,9 +1,8 @@
 <script>
 import { useCommonStore as cs } from "@/stores/CommonStore";
-import { useAttackStore as as } from "@/stores/AttackStore";
-import { updateGameData } from "@/js/common";
 import { getFrameIndex } from "@/js/common";
 import goblinMoveJson from "@/assets/attack/goblin/move.json";
+import goblinInJson from "@/assets/attack/goblin/in.json";
 import aliceMoveJson from "@/assets/attack/alice/move.json";
 import aliceIdleJson from "@/assets/attack/alice/idle.json";
 
@@ -24,6 +23,7 @@ export default {
       goblin: {
         ratio: 0.5,
         move: goblinMoveJson,
+        in: goblinInJson,
       },
       alice: {
         ratio: 0.5,
@@ -38,7 +38,7 @@ export default {
     const c = this.provider.context;
 
     const image = new Image();
-    image.src = require(`@/assets/attack/${this.name}/${this.status}.png`);
+    image.src = require(`@/assets/attack/${this.name}/${this.status}.webp`);
 
     let json = this[this.name][this.status].frames;
     let currentFrame = getFrameIndex(

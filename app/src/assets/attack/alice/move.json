@@ -1,44 +1,45 @@
-{"frames": [
-
 {
-	"filename": "character-move_0000.png",
-	"frame": {"x":0,"y":0,"w":444,"h":500},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":444,"h":500},
-	"sourceSize": {"w":444,"h":500}
-},
-{
-	"filename": "character-move_0001.png",
-	"frame": {"x":444,"y":0,"w":444,"h":500},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":444,"h":500},
-	"sourceSize": {"w":444,"h":500}
-},
-{
-	"filename": "character-move_0002.png",
-	"frame": {"x":888,"y":0,"w":444,"h":500},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":444,"h":500},
-	"sourceSize": {"w":444,"h":500}
-},
-{
-	"filename": "character-move_0003.png",
-	"frame": {"x":1332,"y":0,"w":444,"h":500},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":444,"h":500},
-	"sourceSize": {"w":444,"h":500}
-}],
-"meta": {
-	"app": "https://www.codeandweb.com/texturepacker",
-	"version": "1.0",
-	"image": "character-move.png",
-	"format": "RGBA8888",
-	"size": {"w":1776,"h":500},
-	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:e16131fc05bbc2866856343a51539370:7bafaf07b28ebe7ff4d76c75870822ec:4722f6907c0588d7e894199f1b2e559d$"
-}
+  "frames": [
+    {
+      "filename": "character-move_0000.webp",
+      "frame": { "x": 0, "y": 0, "w": 444, "h": 500 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 444, "h": 500 },
+      "sourceSize": { "w": 444, "h": 500 }
+    },
+    {
+      "filename": "character-move_0001.webp",
+      "frame": { "x": 444, "y": 0, "w": 444, "h": 500 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 444, "h": 500 },
+      "sourceSize": { "w": 444, "h": 500 }
+    },
+    {
+      "filename": "character-move_0002.webp",
+      "frame": { "x": 888, "y": 0, "w": 444, "h": 500 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 444, "h": 500 },
+      "sourceSize": { "w": 444, "h": 500 }
+    },
+    {
+      "filename": "character-move_0003.webp",
+      "frame": { "x": 1332, "y": 0, "w": 444, "h": 500 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 444, "h": 500 },
+      "sourceSize": { "w": 444, "h": 500 }
+    }
+  ],
+  "meta": {
+    "app": "https://www.codeandweb.com/texturepacker",
+    "version": "1.0",
+    "image": "character-move.webp",
+    "format": "RGBA8888",
+    "size": { "w": 1776, "h": 500 },
+    "scale": "1",
+    "smartupdate": "$TexturePacker:SmartUpdate:e16131fc05bbc2866856343a51539370:7bafaf07b28ebe7ff4d76c75870822ec:4722f6907c0588d7e894199f1b2e559d$"
+  }
 }

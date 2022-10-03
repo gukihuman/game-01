@@ -4,13 +4,11 @@ import Cookies from "js-cookie";
 import axios from "axios";
 
 export function getFrameIndex(startGameFrame, currentGameFrame, frameAmount) {
-  let startFrameOffset = startGameFrame % (60 / frameAmount);
+  let startFrameOffset = startGameFrame % (60 / 4);
   let roundedStartGameFrame = startGameFrame - startFrameOffset;
   let roundedGameFrame = currentGameFrame - startFrameOffset;
-  let startFrame =
-    Math.floor(roundedStartGameFrame / (60 / frameAmount)) % frameAmount;
-  let currentFrame =
-    Math.floor(roundedGameFrame / (60 / frameAmount)) % frameAmount;
+  let startFrame = Math.floor(roundedStartGameFrame / (60 / 4)) % frameAmount;
+  let currentFrame = Math.floor(roundedGameFrame / (60 / 4)) % frameAmount;
   currentFrame -= startFrame;
   if (currentFrame < 0) {
     currentFrame += frameAmount;

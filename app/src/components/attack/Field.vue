@@ -1,10 +1,10 @@
 <template lang="pug">
 
 div
-  div(class='bg-[url("@/assets/attack/common/ground.png")] flex items-center \
+  div(class='bg-[url("@/assets/attack/common/ground.webp")] flex items-center \
   justify-center absolute' :style='fieldStyle')
     img(
-      :src="require('@/assets/attack/common/village.png')"
+      :src="require('@/assets/attack/common/village.webp')"
       :style='villageStyle'
     )
 </template>

@@ -17,6 +17,7 @@ div
 
 <script>
 import { useCommonStore as cs } from "@/stores/CommonStore";
+import { useAttackStore as as } from "@/stores/AttackStore";
 
 export default {
   data() {
@@ -30,9 +31,12 @@ export default {
       this.input = "";
     },
     buttonAction() {
-      cs().gameData.story.step = 0;
-      cs().gameData.story.scene = "loading";
-      this.$router.push("/");
+      as().drawObjects.forEach((object) => {
+        console.log(object.name, object.pointY);
+      });
+      // cs().gameData.story.step = 0;
+      // cs().gameData.story.scene = "loading";
+      // this.$router.push("/");
       console.log("Button activated");
     },
   },
