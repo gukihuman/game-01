@@ -27,7 +27,6 @@ import DrawController from "@/components/attack/DrawController.vue";
 import Field from "@/components/attack/Field.vue";
 import { useCommonStore as cs } from "@/stores/CommonStore";
 import { useAttackStore as as } from "@/stores/AttackStore";
-import { useEnemiesStore } from "@/stores/EnemiesStore";
 
 export default {
   components: {
@@ -37,11 +36,7 @@ export default {
   },
   data() {
     return {
-      gameSpeed: 1,
-      center: {
-        pointX: null,
-        pointY: null,
-      },
+      characterDefend: [],
     };
   },
   computed: {
@@ -74,6 +69,9 @@ export default {
             as().enemyCoordinates[object.path].length - 1 < currentStep;
 
           if (object.type == "enemy" && !object.pathEnded) {
+            object.remainingFrames =
+              (as().enemyCoordinates[object.path].length - currentStep) *
+              object.speed;
             object.pointX = as().enemyCoordinates[object.path][currentStep].x;
             object.pointY = as().enemyCoordinates[object.path][currentStep].y;
             object.prevPointX =
@@ -95,12 +93,36 @@ export default {
 
         // character
         if (object.type == "character") {
-          object.pointX = as().characterCoordinates[object.position].x;
-          object.pointY = as().characterCoordinates[object.position].y;
-          if (object.position == 360 * 4 - 1) {
-            object.position = 0;
+          if (!as().isEnemies) {
+            object.status = "idle";
+          } else {
+            object.status = "move";
+            let defendEnemy = as().drawObjects.find((enemy) => {
+              if (enemy.type == "enemy") {
+                return enemy.defender == object.name;
+              }
+            });
+            if (defendEnemy) {
+              if (!defendEnemy.readyToDefend) {
+                if (defendEnemy.clockDirection == "up") {
+                  object.direction = "right";
+                  object.position++;
+                } else if (defendEnemy.clockDirection == "down") {
+                  object.direction = "left";
+                  object.position--;
+                }
+                if (object.position < 0) {
+                  object.position = 1439;
+                } else if (object.position > 1439) {
+                  object.position = 0;
+                }
+                object.pointX = as().characterCoordinates[object.position].x;
+                object.pointY = as().characterCoordinates[object.position].y;
+              }
+            } else {
+              object.status = "idle";
+            }
           }
-          object.position++;
         }
       });
     },
@@ -113,6 +135,7 @@ export default {
       if (value % 200 == 0) {
         as().generateEnemy("goblin");
       }
+      as().assignCharacters();
       this.deathCheck();
       this.moveCycle();
       this.sortByY();
@@ -122,11 +145,6 @@ export default {
   },
   mounted() {
     as().generateCharacter("alice");
-    this.center.pointX = this.$el.clientWidth / 2;
-    this.center.pointY = this.$el.clientHeight / 2;
-
-    cs().centerPoint.x = cs().gameWindow.w / 2;
-    cs().centerPoint.y = cs().gameWindow.h / 2;
   },
 };
 </script>

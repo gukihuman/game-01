@@ -14,7 +14,6 @@ export const useCommonStore = defineStore("CommonStore", {
         player: "#464646",
         grace: "#542516",
       },
-      centerPoint: { x: null, y: null },
       gameData: {
         optionsSet: {
           outsideBrightness: 50,

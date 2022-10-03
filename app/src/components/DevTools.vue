@@ -31,9 +31,20 @@ export default {
       this.input = "";
     },
     buttonAction() {
-      as().drawObjects.forEach((object) => {
-        console.log(object.name, object.pointY);
+      as().drawObjects.forEach((d) => {
+        if (d.type == "enemy") {
+          console.log(
+            d.dangerPosition,
+            d.remainingFrames,
+            d.defender,
+            d.clockDirection,
+            d.readyToDefend
+          );
+        }
       });
+      // as().drawObjects.forEach((object) => {
+      //   console.log(object.name, object.pointY);
+      // });
       // cs().gameData.story.step = 0;
       // cs().gameData.story.scene = "loading";
       // this.$router.push("/");
