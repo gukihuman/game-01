@@ -2,8 +2,12 @@
 import { useCommonStore as cs } from "@/stores/CommonStore";
 import { getFrameIndex } from "@/js/common";
 import goblinMoveJson from "@/assets/attack/goblin/move.json";
+import goblinHideJson from "@/assets/attack/goblin/hide.json";
 import goblinInJson from "@/assets/attack/goblin/in.json";
+import goblinOutJson from "@/assets/attack/goblin/out.json";
 import aliceMoveJson from "@/assets/attack/alice/move.json";
+import aliceGoblinBjJson from "@/assets/attack/alice/goblin.json";
+import aliceGoblinFinalJson from "@/assets/attack/alice/goblin-final.json";
 import aliceIdleJson from "@/assets/attack/alice/idle.json";
 
 export default {
@@ -24,11 +28,15 @@ export default {
         ratio: 0.5,
         move: goblinMoveJson,
         in: goblinInJson,
+        out: goblinOutJson,
+        hide: goblinHideJson,
       },
       alice: {
         ratio: 0.5,
         idle: aliceIdleJson,
         move: aliceMoveJson,
+        goblin: aliceGoblinBjJson,
+        "goblin-final": aliceGoblinFinalJson,
       },
     };
   },

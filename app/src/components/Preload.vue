@@ -18,9 +18,9 @@ const png = ".png";
 const webp = ".webp";
 const pngFiles = {};
 const webpFiles = {
-  "attack/alice": ["move", "idle", "goblin-bj", "goblin-bj-cum"],
+  "attack/alice": ["move", "idle", "goblin", "goblin-final"],
   "attack/common": ["village", "ground"],
-  "attack/goblin": ["move", "in"],
+  "attack/goblin": ["move", "in", "hide"],
   "stories/common": [
     "text-field-out",
     "text-field-in",

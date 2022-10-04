@@ -38,7 +38,9 @@ export default {
             d.remainingFrames,
             d.defender,
             d.clockDirection,
-            d.readyToDefend
+            d.readyToDefend,
+            d.lifeTime,
+            d.deathTime
           );
         }
       });

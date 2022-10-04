@@ -18,7 +18,6 @@ div
       :lifeTime='object.lifeTime'
     )
 
-
 </template>
 
 <script>
@@ -52,11 +51,133 @@ export default {
   },
   methods: {
     deathCheck() {
-      as().drawObjects.forEach((object, index, array) => {
-        if (object.deathTime <= object.lifeTime) {
-          array.splice(index, 1);
+      as().drawObjects.forEach((enemy, index, array) => {
+        if (enemy.type == "enemy") {
+          if (enemy.deathTime <= enemy.lifeTime) {
+            array.splice(index, 1);
+          }
         }
       });
+    },
+    statusCheck() {
+      as().drawObjects.forEach((character) => {
+        if (
+          character.type == "character" &&
+          (character.status != "idle" || character.status != "move")
+        ) {
+          if (character.actionFinalGameFrame == cs().gameFrame) {
+            character.startGameFrame = cs().gameFrame;
+            character.status = character.defendEnemy.name + "-final";
+          }
+          if (character.freeGameFrame == cs().gameFrame) {
+            character.startGameFrame = cs().gameFrame;
+            character.status = "idle";
+            character.defendEnemy.startGameFrame = cs().gameFrame;
+            character.defendEnemy.status = "out";
+            character.defendEnemy.deathTime =
+              character.defendEnemy.lifeTime + 59;
+          }
+        }
+      });
+    },
+    _enemyIn(enemy) {
+      enemy.startGameFrame = cs().gameFrame;
+      enemy.status = "in";
+      enemy.deathTime = enemy.lifeTime + 119;
+    },
+    _enemyMove(enemy) {
+      let currentStep = Math.floor(enemy.lifeTime * enemy.speed);
+      if (as().enemyCoordinates[enemy.path].length - 1 < currentStep) {
+        enemy.pathEnded = true;
+      }
+
+      if (!enemy.pathEnded) {
+        enemy.remainingFrames = Number(
+          (
+            (as().enemyCoordinates[enemy.path].length - currentStep) /
+            enemy.speed
+          ).toFixed(0)
+        );
+        enemy.pointX = as().enemyCoordinates[enemy.path][currentStep].x;
+        enemy.pointY = as().enemyCoordinates[enemy.path][currentStep].y;
+        enemy.prevPointX = as().enemyCoordinates[enemy.path][currentStep - 1].x;
+
+        if (enemy.prevPointX > enemy.pointX) {
+          enemy.direction = "left";
+        } else if (enemy.prevPointX < enemy.pointX) {
+          enemy.direction = "right";
+        }
+      } else {
+        if (enemy.status == "move") {
+          if (enemy.readyToDefend) {
+            let founded = false;
+            this.drawObjects.forEach((character) => {
+              if (
+                character.type == "character" &&
+                character.name == enemy.defender
+              ) {
+                founded = true;
+                character.status = enemy.name;
+                character.startGameFrame = cs().gameFrame;
+                character.direction = enemy.direction;
+                character.actionFinalGameFrame = cs().gameFrame + 300;
+                character.freeGameFrame = character.actionFinalGameFrame + 119;
+                enemy.status = "hide";
+              }
+            });
+            if (!founded) {
+              this._enemyIn(enemy);
+            }
+          } else {
+            this._enemyIn(enemy);
+          }
+        }
+      }
+    },
+    _characterMove(character) {
+      if (!as().isEnemies) {
+        character.status = "idle";
+      } else {
+        character.status = "move";
+        let defendEnemy = as().drawObjects.find((enemy) => {
+          if (enemy.type == "enemy") {
+            return enemy.defender == character.name;
+          }
+        });
+        if (defendEnemy) {
+          character.defendEnemy = defendEnemy;
+          if (
+            Math.abs(character.position - defendEnemy.dangerPosition) >
+            0 + character.speed
+          ) {
+            character.prevPointX =
+              as().characterCoordinates[character.position].x;
+            if (defendEnemy.clockDirection == "up") {
+              character.position++;
+            } else if (defendEnemy.clockDirection == "down") {
+              character.position--;
+            }
+            if (character.position < 0) {
+              character.position = 1439;
+            } else if (character.position > 1439) {
+              character.position = 0;
+            }
+            character.pointX = as().characterCoordinates[character.position].x;
+            character.pointY = as().characterCoordinates[character.position].y;
+            if (character.prevPointX > character.pointX) {
+              character.direction = "left";
+            } else if (character.prevPointX < character.pointX) {
+              character.direction = "right";
+            }
+          } else {
+            defendEnemy.readyToDefend = true;
+            character.status = "idle";
+          }
+        } else {
+          character.defendEnemy = null;
+          character.status = "idle";
+        }
+      }
     },
     moveCycle() {
       as().drawObjects.forEach((object) => {
@@ -64,79 +185,15 @@ export default {
 
         // enemy
         if (object.type == "enemy") {
-          let currentStep = Math.floor(object.lifeTime * object.speed);
-          if (as().enemyCoordinates[object.path].length - 1 < currentStep) {
-            object.pathEnded = true;
-          }
-
-          if (object.type == "enemy" && !object.pathEnded) {
-            object.remainingFrames = Number(
-              (
-                (as().enemyCoordinates[object.path].length - currentStep) /
-                object.speed
-              ).toFixed(0)
-            );
-            object.pointX = as().enemyCoordinates[object.path][currentStep].x;
-            object.pointY = as().enemyCoordinates[object.path][currentStep].y;
-            object.prevPointX =
-              as().enemyCoordinates[object.path][currentStep - 1].x;
-
-            if (object.prevPointX > object.pointX) {
-              object.direction = "left";
-            } else if (object.prevPointX < object.pointX) {
-              object.direction = "right";
-            }
-          } else {
-            if (object.status != "in") {
-              object.startGameFrame = cs().gameFrame;
-              object.status = "in";
-              object.deathTime = object.lifeTime + 119;
-            }
-          }
+          this._enemyMove(object);
         }
 
         // character
-        if (object.type == "character") {
-          if (!as().isEnemies) {
-            object.status = "idle";
-          } else {
-            object.status = "move";
-            let defendEnemy = as().drawObjects.find((enemy) => {
-              if (enemy.type == "enemy") {
-                return enemy.defender == object.name;
-              }
-            });
-            if (defendEnemy) {
-              if (
-                Math.abs(object.position - defendEnemy.dangerPosition) >
-                0 + object.speed
-              ) {
-                object.prevPointX =
-                  as().characterCoordinates[object.position].x;
-                if (defendEnemy.clockDirection == "up") {
-                  object.position++;
-                } else if (defendEnemy.clockDirection == "down") {
-                  object.position--;
-                }
-                if (object.position < 0) {
-                  object.position = 1439;
-                } else if (object.position > 1439) {
-                  object.position = 0;
-                }
-                object.pointX = as().characterCoordinates[object.position].x;
-                object.pointY = as().characterCoordinates[object.position].y;
-                if (object.prevPointX > object.pointX) {
-                  object.direction = "left";
-                } else if (object.prevPointX < object.pointX) {
-                  object.direction = "right";
-                }
-              } else {
-                object.status = "idle";
-              }
-            } else {
-              object.status = "idle";
-            }
-          }
+        if (
+          object.type == "character" &&
+          (object.status == "idle" || object.status == "move")
+        ) {
+          this._characterMove(object);
         }
       });
     },
@@ -147,11 +204,12 @@ export default {
   watch: {
     gameFrame(value) {
       if (value == 50) as().generateEnemy("goblin");
-      if (value % 30 == 0) as().generateEnemy("goblin");
+      if (value % 300 == 0) as().generateEnemy("goblin");
       if (value % 15 == 0) as().assignCharacters();
+      this.statusCheck();
       this.deathCheck();
       this.moveCycle();
-      this.sortByY();
+      if (value % 15 == 0) this.sortByY();
 
       this.$refs.canvas.clear();
     },

@@ -83,7 +83,6 @@ export const useAttackStore = defineStore("AttackStore", {
           character.speed,
           pickedEnemy.remainingFrames
         );
-        // console.log(pickedEnemy.name, pickedEnemy.id, canReach);
         if (!canReach) {
           pickedEnemy.cantReach.push(character.name);
           pickedEnemy = this._defendEnemy(character);
@@ -95,7 +94,10 @@ export const useAttackStore = defineStore("AttackStore", {
       this._nullEnemiesDefenders();
       if (this.isEnemies) {
         this.drawObjects.forEach((character) => {
-          if (character.type == "character") {
+          if (
+            character.type == "character" &&
+            (character.status == "idle" || character.status == "move")
+          ) {
             let defendEnemy = this._defendEnemy(character);
             if (defendEnemy) {
               let difference = defendEnemy.dangerPosition - character.position;
@@ -116,7 +118,6 @@ export const useAttackStore = defineStore("AttackStore", {
                 defendEnemy.clockDirection = "up";
               } else {
                 defendEnemy.clockDirection = "down";
-                defendEnemy.readyToDefend = true;
               }
             }
           }
@@ -179,13 +180,15 @@ export const useAttackStore = defineStore("AttackStore", {
         speed: 1,
         name: name,
         lifeTime: 1,
-        deathTime: Infinity,
         direction: "right",
         position: 0,
         prevPointX: null,
         pointX: this.characterCoordinates[0].x,
         pointY: this.characterCoordinates[0].y,
         status: "idle",
+        freeGameFrame: null,
+        actionFinalGameFrame: null,
+        defendEnemy: null,
       });
     },
   },
