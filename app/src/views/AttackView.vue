@@ -91,6 +91,22 @@ export default {
         enemy.pathEnded = true;
       }
 
+      if (enemy.readyToDefend && enemy.remainingFrames < 30) {
+        this.drawObjects.forEach((character) => {
+          if (
+            character.type == "character" &&
+            character.name == enemy.defender
+          ) {
+            character.status = enemy.name;
+            character.startGameFrame = cs().gameFrame;
+            character.direction = enemy.direction;
+            character.actionFinalGameFrame = cs().gameFrame + 300;
+            character.freeGameFrame = character.actionFinalGameFrame + 119;
+            enemy.status = "hide";
+          }
+        });
+      }
+
       if (!enemy.pathEnded) {
         enemy.remainingFrames = Number(
           (
@@ -109,34 +125,7 @@ export default {
         }
       } else {
         if (enemy.status == "move") {
-          if (enemy.readyToDefend) {
-            let founded = false;
-            this.drawObjects.forEach((character) => {
-              if (
-                character.type == "character" &&
-                character.name == enemy.defender
-              ) {
-                founded = true;
-                character.status = enemy.name;
-                character.startGameFrame = cs().gameFrame;
-                character.direction = enemy.direction;
-                character.actionFinalGameFrame = cs().gameFrame + 300;
-                character.freeGameFrame = character.actionFinalGameFrame + 119;
-                enemy.status = "hide";
-              }
-            });
-            if (!founded) {
-              console.log("BUG FOUNDED");
-              as().drawObjects.forEach((d) => {
-                if (d.type == "enemy") {
-                  console.log(d);
-                }
-              });
-              this._enemyIn(enemy);
-            }
-          } else {
-            this._enemyIn(enemy);
-          }
+          this._enemyIn(enemy);
         }
       }
     },
@@ -189,17 +178,15 @@ export default {
       as().drawObjects.forEach((object) => {
         object.lifeTime++;
 
-        // enemy
-        if (object.type == "enemy") {
-          this._enemyMove(object);
-        }
-
-        // character
         if (
           object.type == "character" &&
           (object.status == "idle" || object.status == "move")
         ) {
           this._characterMove(object);
+        }
+
+        if (object.type == "enemy") {
+          this._enemyMove(object);
         }
       });
     },
