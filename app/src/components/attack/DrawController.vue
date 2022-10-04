@@ -38,10 +38,22 @@ export default {
         goblin: aliceGoblinBjJson,
         "goblin-final": aliceGoblinFinalJson,
       },
+      adjustY: {
+        goblin: {
+          out: 100 * cs().gameWindowRatio2k,
+        },
+      },
     };
   },
   render() {
     if (!this.provider.context) return;
+
+    let adjustY = 0;
+    if (this.adjustY[this.name]) {
+      if (this.adjustY[this.name][this.status]) {
+        adjustY = this.adjustY[this.name][this.status];
+      }
+    }
 
     const c = this.provider.context;
 
@@ -71,7 +83,7 @@ export default {
         json[currentFrame].sourceSize.w,
         json[currentFrame].sourceSize.h,
         this.pointX * cs().gameWindowRatio2k - width / 2,
-        this.pointY * cs().gameWindowRatio2k - height / 2,
+        this.pointY * cs().gameWindowRatio2k - height / 2 + adjustY,
         width,
         height
       );
@@ -85,7 +97,7 @@ export default {
         json[currentFrame].sourceSize.w,
         json[currentFrame].sourceSize.h,
         (this.pointX * cs().gameWindowRatio2k - width / 2) * -1 - width,
-        this.pointY * cs().gameWindowRatio2k - height / 2,
+        this.pointY * cs().gameWindowRatio2k - height / 2 + adjustY,
         width,
         height
       );

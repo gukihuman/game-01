@@ -126,6 +126,12 @@ export default {
               }
             });
             if (!founded) {
+              console.log("BUG FOUNDED");
+              as().drawObjects.forEach((d) => {
+                if (d.type == "enemy") {
+                  console.log(d);
+                }
+              });
               this._enemyIn(enemy);
             }
           } else {

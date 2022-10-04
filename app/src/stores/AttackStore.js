@@ -48,6 +48,7 @@ export const useAttackStore = defineStore("AttackStore", {
         if (enemy.type == "enemy") {
           enemy.defender = null;
           enemy.clockDirection = null;
+          enemy.readyToDefend = null;
         }
       });
     },
