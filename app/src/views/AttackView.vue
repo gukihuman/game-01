@@ -65,13 +65,17 @@ export default {
         // enemy
         if (object.type == "enemy") {
           let currentStep = Math.floor(object.lifeTime * object.speed);
-          object.pathEnded =
-            as().enemyCoordinates[object.path].length - 1 < currentStep;
+          if (as().enemyCoordinates[object.path].length - 1 < currentStep) {
+            object.pathEnded = true;
+          }
 
           if (object.type == "enemy" && !object.pathEnded) {
-            object.remainingFrames =
-              (as().enemyCoordinates[object.path].length - currentStep) *
-              object.speed;
+            object.remainingFrames = Number(
+              (
+                (as().enemyCoordinates[object.path].length - currentStep) /
+                object.speed
+              ).toFixed(0)
+            );
             object.pointX = as().enemyCoordinates[object.path][currentStep].x;
             object.pointY = as().enemyCoordinates[object.path][currentStep].y;
             object.prevPointX =
@@ -103,12 +107,15 @@ export default {
               }
             });
             if (defendEnemy) {
-              if (!defendEnemy.readyToDefend) {
+              if (
+                Math.abs(object.position - defendEnemy.dangerPosition) >
+                0 + object.speed
+              ) {
+                object.prevPointX =
+                  as().characterCoordinates[object.position].x;
                 if (defendEnemy.clockDirection == "up") {
-                  object.direction = "right";
                   object.position++;
                 } else if (defendEnemy.clockDirection == "down") {
-                  object.direction = "left";
                   object.position--;
                 }
                 if (object.position < 0) {
@@ -118,6 +125,13 @@ export default {
                 }
                 object.pointX = as().characterCoordinates[object.position].x;
                 object.pointY = as().characterCoordinates[object.position].y;
+                if (object.prevPointX > object.pointX) {
+                  object.direction = "left";
+                } else if (object.prevPointX < object.pointX) {
+                  object.direction = "right";
+                }
+              } else {
+                object.status = "idle";
               }
             } else {
               object.status = "idle";
@@ -132,10 +146,9 @@ export default {
   },
   watch: {
     gameFrame(value) {
-      if (value % 200 == 0) {
-        as().generateEnemy("goblin");
-      }
-      as().assignCharacters();
+      if (value == 50) as().generateEnemy("goblin");
+      if (value % 30 == 0) as().generateEnemy("goblin");
+      if (value % 15 == 0) as().assignCharacters();
       this.deathCheck();
       this.moveCycle();
       this.sortByY();

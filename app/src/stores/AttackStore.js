@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { useCommonStore as cs } from "@/stores/CommonStore";
-import { enemyCharacterRelation } from "@/js/common.mjs";
 
 export const useAttackStore = defineStore("AttackStore", {
   state: () => {
@@ -36,107 +35,90 @@ export const useAttackStore = defineStore("AttackStore", {
     isEnemies: (state) => {
       let isEnemies = false;
       state.drawObjects.forEach((object) => {
-        if (object.type == "enemy") {
+        if (object.type == "enemy" && !object.pathEnded) {
           isEnemies = true;
         }
       });
-      if (isEnemies) {
-        return true;
-      } else {
-        return false;
-      }
+      return isEnemies;
     },
   },
   actions: {
-    _willMakeIt(difference, speed, remainingFrames) {
-      let absDifference = difference;
+    _nullEnemiesDefenders() {
+      this.drawObjects.forEach((enemy) => {
+        if (enemy.type == "enemy") {
+          enemy.defender = null;
+          enemy.clockDirection = null;
+        }
+      });
+    },
+    _canReach(difference, characterSpeed, remainingFrames) {
+      let absDifference = Math.abs(difference);
       if (difference > 720) {
         absDifference = Math.abs(difference - 1440);
       } else if (difference < -720) {
         absDifference = difference + 1440;
       }
-      if (absDifference / speed <= remainingFrames) {
-        console.log("make it");
-        return true;
-      } else {
-        console.log("dont make it");
-        return false;
-      }
+      return absDifference / characterSpeed < remainingFrames ? true : false;
     },
-    assignCharacters() {
+    _defendEnemy(character) {
+      let pickedEnemy = null;
+      let minRemainingFrames = Infinity;
       this.drawObjects.forEach((enemy) => {
-        console.log("nulled");
         if (enemy.type == "enemy") {
-          enemy.defender == null;
+          if (
+            !enemy.pathEnded &&
+            !enemy.defender &&
+            !enemy.cantReach.includes(character.name) &&
+            enemy.remainingFrames < minRemainingFrames
+          ) {
+            minRemainingFrames = enemy.remainingFrames;
+            pickedEnemy = enemy;
+          }
         }
       });
+      if (pickedEnemy) {
+        let difference = pickedEnemy.dangerPosition - character.position;
+        let canReach = this._canReach(
+          difference,
+          character.speed,
+          pickedEnemy.remainingFrames
+        );
+        // console.log(pickedEnemy.name, pickedEnemy.id, canReach);
+        if (!canReach) {
+          pickedEnemy.cantReach.push(character.name);
+          pickedEnemy = this._defendEnemy(character);
+        }
+      }
+      return pickedEnemy;
+    },
+    assignCharacters() {
+      this._nullEnemiesDefenders();
       if (this.isEnemies) {
         this.drawObjects.forEach((character) => {
           if (character.type == "character") {
-            let closestDistance = Infinity;
-            let closestFreeEnemy;
-            let drawObjects = this.drawObjects;
-            let getWillMakeIt = this._willMakeIt;
-            function _getFreeEnemy() {
-              let moreEnemies = false;
-              drawObjects.forEach((enemy, index) => {
-                if (enemy.type == "enemy") {
-                  if (
-                    enemy.remainingFrames <= closestDistance &&
-                    !enemy.defender &&
-                    !enemy.cantReach.includes(character.name)
-                  ) {
-                    moreEnemies = true;
-                    closestDistance = enemy.remainingFrames;
-                    closestFreeEnemy = drawObjects[index];
-                  }
-                }
-              });
-              if (moreEnemies) {
-                let difference =
-                  closestFreeEnemy.dangerPosition - character.position;
-                let willMakeIt = getWillMakeIt(
-                  difference,
-                  character.speed,
-                  closestFreeEnemy.remainingFrames
-                );
-                if (willMakeIt) {
-                  drawObjects.forEach((enemy) => {
-                    if (enemy.defender == character.name) {
-                      enemy.defender == null;
-                    }
-                  });
-                  console.log(
-                    "Defender is set for ",
-                    closestFreeEnemy.name,
-                    closestFreeEnemy.id
-                  );
-                  closestFreeEnemy.defender = character.name;
-                  if (difference > 720) {
-                    closestFreeEnemy.clockDirection = "down";
-                  } else if (
-                    difference > 0 + character.speed &&
-                    difference <= 720
-                  ) {
-                    closestFreeEnemy.clockDirection = "up";
-                  } else if (
-                    difference > -720 &&
-                    difference < 0 - character.speed
-                  ) {
-                    closestFreeEnemy.clockDirection = "down";
-                  } else if (difference <= -720) {
-                    closestFreeEnemy.clockDirection = "up";
-                  } else {
-                    closestFreeEnemy.readyToDefend = true;
-                  }
-                  return;
-                } else {
-                  closestFreeEnemy.cantReach.push(character.name);
-                  _getFreeEnemy();
-                }
+            let defendEnemy = this._defendEnemy(character);
+            if (defendEnemy) {
+              let difference = defendEnemy.dangerPosition - character.position;
+              defendEnemy.defender = character.name;
+              if (difference > 720) {
+                defendEnemy.clockDirection = "down";
+              } else if (
+                difference > 0 + character.speed &&
+                difference <= 720
+              ) {
+                defendEnemy.clockDirection = "up";
+              } else if (
+                difference > -720 &&
+                difference < 0 - character.speed
+              ) {
+                defendEnemy.clockDirection = "down";
+              } else if (difference <= -720) {
+                defendEnemy.clockDirection = "up";
+              } else {
+                defendEnemy.clockDirection = "down";
+                defendEnemy.readyToDefend = true;
               }
             }
-            _getFreeEnemy();
           }
         });
       }
@@ -161,13 +143,14 @@ export const useAttackStore = defineStore("AttackStore", {
     generateEnemy(name) {
       let path = Math.floor(Math.random() * 100);
       path = this._cleanPath(path);
+      let speed = this.enemies[name].speed;
       if (path) {
         this.drawObjects.push({
           id: this.freeId,
           startGameFrame: cs().gameFrame,
           type: "enemy",
           name: name,
-          speed: this.enemies[name].speed,
+          speed: speed,
           path: path,
           lifeTime: 1,
           deathTime: Infinity,
@@ -175,8 +158,10 @@ export const useAttackStore = defineStore("AttackStore", {
           prevPointX: 0,
           pointX: 0,
           pointY: 0,
-          remainingFrames:
-            this.enemyCoordinates[path].length * this.enemies[name].speed,
+          pathEnded: false,
+          remainingFrames: Number(
+            (this.enemyCoordinates[path].length / speed).toFixed(0)
+          ),
           status: "move",
           dangerPosition: this.enemyCharacterRelation[path],
           defender: null,
@@ -197,7 +182,7 @@ export const useAttackStore = defineStore("AttackStore", {
         deathTime: Infinity,
         direction: "right",
         position: 0,
-        prevPointX: this.characterCoordinates[0].x,
+        prevPointX: null,
         pointX: this.characterCoordinates[0].x,
         pointY: this.characterCoordinates[0].y,
         status: "idle",
